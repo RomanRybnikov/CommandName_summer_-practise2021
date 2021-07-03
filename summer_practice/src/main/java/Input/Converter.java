@@ -7,10 +7,10 @@ public class Converter {
         ArrayList<ArrayList<Integer>> matrix = new ArrayList<>();
         String[] splitMatrix = stringMatrix.split("\n");
 
-        for(int i = 0 ;i<splitMatrix.length;i++){
+        for(int i = 0; i<splitMatrix.length; i++){
             matrix.add(new ArrayList<>());
             String[] row = splitMatrix[i].split(" ");
-            for(int j = 0 ;j<row.length;j++){
+            for(int j = 0; j<row.length; j++){
                 if(row[j].equals("-")){
                     matrix.get(i).add(null);
                 }else {

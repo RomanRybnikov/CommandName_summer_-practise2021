@@ -4,7 +4,7 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
-import org.jetbrains.annotations.NotNull;
+
 
 
 public class Gui extends JFrame {
@@ -83,7 +83,7 @@ public class Gui extends JFrame {
     }
 
 
-    private void setEastPanel(@NotNull JPanel eastPanel){
+    private void setEastPanel(JPanel eastPanel){
         eastPanel.setBorder(new EmptyBorder(20,20,20,20));
         GridBagLayout eastLayout = new GridBagLayout();
         eastPanel.setLayout(eastLayout);
@@ -108,7 +108,7 @@ public class Gui extends JFrame {
 
     }
 
-    private void setWestPanel(@NotNull JPanel westPanel){
+    private void setWestPanel(JPanel westPanel){
         westPanel.setBorder(new EmptyBorder(4,4,4,4));
         GridBagLayout westLayout = new GridBagLayout();
         westPanel.setLayout(westLayout);
@@ -128,7 +128,7 @@ public class Gui extends JFrame {
         westPanel.add(buttonGenerateGraph,westConstraints);
     }
 
-    private void setSouthPanel(@NotNull JPanel southPanel){
+    private void setSouthPanel(JPanel southPanel){
         southPanel.setBorder(new EmptyBorder(4,4,4,4));
         GridBagLayout southLayout = new GridBagLayout();
         southPanel.setLayout(southLayout);

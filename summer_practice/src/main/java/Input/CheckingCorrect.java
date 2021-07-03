@@ -3,23 +3,42 @@ package Input;
 import java.util.ArrayList;
 
 public class CheckingCorrect {
-    public static boolean checkCorrectStringMatrix(String matrix){
-        if(matrix.isEmpty()){
-            return false;
-        }
-        matrix=matrix.trim();
-        for(int i = 0 ;i<matrix.length();i++){
+    public static boolean isEmptyMatrix(String matrix){
+        if (matrix.isEmpty()) return false;
+        return true;
+    }
+
+    public static boolean checkSymbolsAtStringMatrix(String matrix){
+        for (int i = 0; i < matrix.length(); i++){
             char c = matrix.charAt(i);
             if(!(c>='0' && c<='9' || c == ' ' || c=='\n' || c=='-') ){
                 return false;
             }
         }
+        return true;
+    }
+
+//    public static void fillMatrix...(){}  тут я бы хотел заменить всё с первого for-a ниже
+
+    public static boolean checkSizeMatrix(ArrayList<ArrayList<Integer>> intMatrix, int size){
+        for (ArrayList<Integer>list : intMatrix) {
+            if (list.size() != size) return false;
+        }
+        return true;
+    }
+
+    public static boolean checkCorrectStringMatrix(String matrix){
+        isEmptyMatrix(matrix);
+        matrix = matrix.trim();
+        checkSymbolsAtStringMatrix(matrix);
+
         String[] stringMatrix = matrix.split("\n");
         ArrayList<ArrayList<Integer>> intMatrix = new ArrayList<>();
-        for(int i = 0 ;i<stringMatrix.length;i++){
+
+        for(int i = 0; i<stringMatrix.length; i++){
             intMatrix.add(new ArrayList<>());
             String[] row = stringMatrix[i].split(" ");
-            for(int j = 0 ;j<row.length;j++){
+            for(int j = 0; j < row.length; j++){
                 try{
                     if(row[j].equals("-")){
                         intMatrix.get(i).add(null);
@@ -34,12 +53,8 @@ public class CheckingCorrect {
             }
         }
 
-        int size=intMatrix.size();
-        for(ArrayList<Integer> list:intMatrix){
-            if(list.size()!=size){
-                return false;
-            }
-        }
+        int size = intMatrix.size();
+        checkSizeMatrix(intMatrix, size);
 
         return true;
     }

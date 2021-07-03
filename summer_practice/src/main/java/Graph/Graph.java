@@ -1,7 +1,5 @@
 package Graph;
 
-import org.jetbrains.annotations.Nullable;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -16,8 +14,8 @@ public class Graph {
 
     public Graph(ArrayList<ArrayList<Integer>> matrix) throws IOException {
         if(CheckingCorrect.checkCorrectMatrix(matrix)){
-            edges=new ArrayList<>();
-            vertexes=new ArrayList<>();
+            edges = new ArrayList<>();
+            vertexes = new ArrayList<>();
             fillEdges(edges,matrix);
             fillVertexes(vertexes,matrix);
             countEdges= edges.size();
@@ -82,7 +80,7 @@ public class Graph {
             countVertexes--;
         }
         else{
-            throw  new IndexOutOfBoundsException("Vertex with number " + vertex + "does not exist");
+            throw new IndexOutOfBoundsException("Vertex with number " + vertex + "does not exist");
         }
     }
 
@@ -101,7 +99,7 @@ public class Graph {
         if(vertex1<countVertexes && vertex1>=0 && vertex2<countVertexes && vertex2>=0) {
             Edge edge = new Edge(vertex1,vertex2);
             ListIterator<Edge> iterator = containsEdge(edge);
-            if(iterator!=null)//если такое ребро есть
+            if(iterator != null)//если такое ребро есть
             {
                 iterator.remove();
                 countEdges--;
@@ -118,7 +116,7 @@ public class Graph {
         {
             for(int j = i ;j<matrix.size();j++){
                 Integer weight = matrix.get(i).get(j);
-                if(weight!=null){
+                if(weight != -1){
                     edges.add(new Edge(i,j,weight));
                     countEdges++;
                 }
@@ -127,12 +125,11 @@ public class Graph {
     }
 
     private void fillVertexes(ArrayList<Integer>vertexes,ArrayList<ArrayList<Integer>> matrix){
-        for(int i = 0 ;i<matrix.size();i++){
+        for(int i = 0; i<matrix.size(); i++){
             vertexes.add(i);
         }
     }
 
-    @Nullable
     private ListIterator<Edge>  containsEdge(Edge edge){
         ListIterator<Edge> iterator = edges.listIterator();
         while(iterator.hasNext()){
@@ -154,10 +151,10 @@ public class Graph {
 
     @Override
     public boolean equals(Object object) {
-        if(object==this){
+        if(object == this){
             return true;
         }
-        if(object==null||object.getClass()!=this.getClass()){
+        if(object == null || object.getClass() != this.getClass()){
             return false;
         }
         Graph graph = (Graph) object;

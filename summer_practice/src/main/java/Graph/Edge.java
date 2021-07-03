@@ -6,9 +6,9 @@ public class Edge {
     private int weight;
 
     public Edge(int v1,int v2,int weight){
-        this.vertex1=v1;
-        this.vertex2=v2;
-        this.weight=weight;
+        this.vertex1 = v1;
+        this.vertex2 = v2;
+        this.weight = weight;
     }
 
     public Edge(int v1,int v2){
