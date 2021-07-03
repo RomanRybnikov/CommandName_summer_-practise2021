@@ -15,19 +15,17 @@ public class Gui extends JFrame {
     private JButton buttonNext;
     private JButton buttonPrev;
     private JButton buttonStart;
+    private JButton buttonEnd;
     private JButton buttonAddVertex;
-    private JButton buttonDeleteVertex;
     private JButton buttonAddEdge;
-    private JButton buttonDeleteEdge;
     private JButton buttonInputGraph;
-    private JButton buttonClearGraph;
+    private JButton buttonGenerateGraph;
 
-    private JTextField textInputAddEdge;
-    private JTextField textInputDeleteEdge;
     private JLabel emptyLabelAddVertex;
-    private JTextField textInputDeleteVertex;
     private JTextArea textInputAddGraph;
+    private JTextField textInputLimitsForGenerateGraph;
     private JScrollPane inputGraphScrollPane;
+    private JTextField textInputAddEdge;
 
     public Gui(){
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -66,17 +64,16 @@ public class Gui extends JFrame {
         buttonStart = new JButton("START");
         buttonAddEdge = new JButton("Add edge");
         buttonAddVertex = new JButton("Add vertex");
-        buttonDeleteEdge = new JButton("Delete edge");
-        buttonDeleteVertex = new JButton("Delete vertex");
-        buttonClearGraph  = new JButton("Generate Graph");
+        buttonGenerateGraph = new JButton("Generate Graph");
+        textInputLimitsForGenerateGraph = new JTextField();
         buttonInputGraph = new JButton("Input graph");
 
-        textInputAddEdge = new JTextField();
         textInputAddGraph = new JTextArea();
+        textInputAddEdge = new JTextField();
         emptyLabelAddVertex=new JLabel();
-        textInputDeleteEdge = new JTextField();
-        textInputDeleteVertex = new JTextField();
         inputGraphScrollPane = new JScrollPane(textInputAddGraph);
+        buttonEnd = new JButton("END");
+
     }
 
     private void initWindowSettings(){
@@ -108,17 +105,7 @@ public class Gui extends JFrame {
         eastConstraints.gridy=3;
         eastPanel.add(textInputAddEdge,eastConstraints);
 
-        eastConstraints.gridy=4;
-        eastPanel.add(buttonDeleteVertex,eastConstraints);
 
-        eastConstraints.gridy=5;
-        eastPanel.add(textInputDeleteVertex,eastConstraints);
-
-        eastConstraints.gridy=6;
-        eastPanel.add(buttonDeleteEdge,eastConstraints);
-
-        eastConstraints.gridy=7;
-        eastPanel.add(textInputDeleteEdge,eastConstraints);
     }
 
     private void setWestPanel(@NotNull JPanel westPanel){
@@ -138,7 +125,7 @@ public class Gui extends JFrame {
         westPanel.add(inputGraphScrollPane,westConstraints);
 
         westConstraints.gridy=2;
-        westPanel.add(buttonClearGraph,westConstraints);
+        westPanel.add(buttonGenerateGraph,westConstraints);
     }
 
     private void setSouthPanel(@NotNull JPanel southPanel){
@@ -159,6 +146,9 @@ public class Gui extends JFrame {
 
         southConstraints.gridx=2;
         southPanel.add(buttonNext,southConstraints);
+
+        southConstraints.gridx=3;
+        southPanel.add(buttonEnd,southConstraints);
     }
 
     private void setMainContainer(JPanel eastPanel,JPanel westPanel,JPanel southPanel){
