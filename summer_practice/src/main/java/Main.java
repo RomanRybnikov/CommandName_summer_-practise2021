@@ -7,4 +7,4 @@ public class Main {
         gui.setVisible(true);
     }
 }
-// тест для гита
+// тест для гита 2
