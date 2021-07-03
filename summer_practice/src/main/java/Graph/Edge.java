@@ -29,7 +29,7 @@ public class Edge {
     {
         return weight;
     }
-
+    // cравнение ребер
     public boolean comparisonIncidentVertexes(Edge edge){
         return this.vertex1==edge.getVertex1() && this.vertex2==edge.getVertex2() || this.vertex2==edge.getVertex1() && this.vertex1==edge.getVertex2();
     }

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.ListIterator;
+import java.util.Optional;
 import Input.*;
 
 public class Graph {
@@ -26,12 +27,27 @@ public class Graph {
         }
     }
 
+    // изменено
+    public ArrayList<Edge> myClone(ArrayList<Edge> edges){
+        ArrayList<Edge> newEdges = new ArrayList<Edge>(edges);
+        return newEdges;
+    }
+
+
+    public ArrayList<Integer> myClone1(ArrayList<Integer> vertexes){
+        ArrayList<Integer> newVertexes = new ArrayList<Integer>(vertexes);
+        return newVertexes;
+    }
+
+
+
     private Graph(ArrayList<Edge> edges, ArrayList<Integer> vertexes){
-        this.edges = (ArrayList<Edge>) edges.clone();
+        this.edges = (ArrayList<Edge>) myClone(edges);
         this.countEdges = edges.size();
-        this.vertexes = (ArrayList<Integer>) vertexes.clone();
+        this.vertexes = (ArrayList<Integer>) myClone1(vertexes);
         this.countVertexes = vertexes.size();
     }
+
 
     public int getCountVertexes(){
         return countVertexes;
@@ -86,7 +102,7 @@ public class Graph {
 
     public void addEdge(Edge edge){
         ListIterator<Edge> iterator = containsEdge(edge);
-        if(iterator!=null){//если ребро инцидентное данным вершинам уже есть, то заменяем его
+        if(iterator != null){//если ребро инцидентное данным вершинам уже есть, то заменяем его
             iterator.set(edge);
         }
         else{
@@ -129,8 +145,7 @@ public class Graph {
             vertexes.add(i);
         }
     }
-
-    private ListIterator<Edge>  containsEdge(Edge edge){
+    private ListIterator<Edge> containsEdge(Edge edge){
         ListIterator<Edge> iterator = edges.listIterator();
         while(iterator.hasNext()){
             Edge tempEdge = iterator.next();
@@ -140,6 +155,26 @@ public class Graph {
         }
         return null;
     }
+
+//    private boolean containsEdge(Edge edge){
+//        ListIterator<Edge> iterator = edges.listIterator();
+//        while(iterator.hasNext()){
+//            Edge tempEdge = iterator.next();
+//            if(edge.comparisonIncidentVertexes(tempEdge)){
+//                return true;
+//            }
+//        }
+//        return false;
+//    }
+//
+//    private Optional<ListIterator> getIteratorEdge(Edge edge){
+//        ListIterator<Edge> iterator = edges.listIterator();
+//        if (containsEdge(edge)){
+//            return Optional.ofNullable(ListIterator<Edge> edge);
+//        }
+//        return Optional.empty();
+//    }
+
 
     public Graph copyGraph(){
         return new Graph(this.edges,this.vertexes);
