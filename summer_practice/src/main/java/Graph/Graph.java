@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.ListIterator;
 import java.util.Optional;
+
 import Input.*;
 
 public class Graph {
@@ -13,10 +14,17 @@ public class Graph {
     private int countVertexes;
     private int countEdges;
 
+    public Graph(){
+        vertexes = new ArrayList<>();
+        edges = new ArrayList<>();
+        countEdges=0;
+        countVertexes=0;
+    }
+
     public Graph(ArrayList<ArrayList<Integer>> matrix) throws IOException {
         if(CheckingCorrect.checkCorrectMatrix(matrix)){
-            edges = new ArrayList<>();
-            vertexes = new ArrayList<>();
+            edges=new ArrayList<>();
+            vertexes=new ArrayList<>();
             fillEdges(edges,matrix);
             fillVertexes(vertexes,matrix);
             countEdges= edges.size();
@@ -27,27 +35,32 @@ public class Graph {
         }
     }
 
-    // изменено
-    public ArrayList<Edge> myClone(ArrayList<Edge> edges){
-        ArrayList<Edge> newEdges = new ArrayList<Edge>(edges);
-        return newEdges;
-    }
-
-
-    public ArrayList<Integer> myClone1(ArrayList<Integer> vertexes){
-        ArrayList<Integer> newVertexes = new ArrayList<Integer>(vertexes);
-        return newVertexes;
-    }
-
-
-
-    private Graph(ArrayList<Edge> edges, ArrayList<Integer> vertexes){
-        this.edges = (ArrayList<Edge>) myClone(edges);
+    public Graph(ArrayList<Edge> edges, ArrayList<Integer> vertexes){
+        this.edges = cloneEdges(edges);
         this.countEdges = edges.size();
-        this.vertexes = (ArrayList<Integer>) myClone1(vertexes);
+        this.vertexes = cloneVertexes(vertexes);
         this.countVertexes = vertexes.size();
     }
 
+    public Graph(int vertexesCount){
+        vertexes = new ArrayList<>();
+        for(int i = 0;i<vertexesCount;i++){
+            vertexes.add(i);
+        }
+    }
+
+    public ArrayList<Edge> cloneEdges(ArrayList<Edge> edges){
+        ArrayList<Edge> newEdges = new ArrayList<Edge>();
+        for(Edge e:edges){
+            newEdges.add(new Edge(e.getVertex1(),e.getVertex2(),e.getWeight()));
+        }
+        return newEdges;
+    }
+
+    public ArrayList<Integer> cloneVertexes(ArrayList<Integer> vertexes){
+        ArrayList<Integer> newVertexes = new ArrayList<Integer>(vertexes);
+        return newVertexes;
+    }
 
     public int getCountVertexes(){
         return countVertexes;
@@ -96,14 +109,21 @@ public class Graph {
             countVertexes--;
         }
         else{
-            throw new IndexOutOfBoundsException("Vertex with number " + vertex + "does not exist");
+            throw  new IndexOutOfBoundsException("Vertex with number " + vertex + "does not exist");
         }
     }
 
-    public void addEdge(Edge edge){
-        ListIterator<Edge> iterator = containsEdge(edge);
-        if(iterator != null){//если ребро инцидентное данным вершинам уже есть, то заменяем его
-            iterator.set(edge);
+    public void addEdge(Edge edge) throws IOException{
+        if(!(vertexes.contains(edge.getVertex1()) && vertexes.contains(edge.getVertex2()) && edge.getVertex1()!=edge.getVertex2())){
+            throw new IOException("Wrong edge");
+        }
+
+        if(containsEdge(edge)){//если ребро инцидентное данным вершинам уже есть, то заменяем его
+            Optional<ListIterator<Edge>> iteratorOpt = getIteratorEdge(edge);
+            if(!iteratorOpt.isEmpty()) {
+                ListIterator<Edge> iterator = iteratorOpt.get();
+                iterator.set(edge);
+            }
         }
         else{
             edges.add(edge);
@@ -114,11 +134,14 @@ public class Graph {
     public void deleteEdge(int vertex1, int vertex2) throws IndexOutOfBoundsException{
         if(vertex1<countVertexes && vertex1>=0 && vertex2<countVertexes && vertex2>=0) {
             Edge edge = new Edge(vertex1,vertex2);
-            ListIterator<Edge> iterator = containsEdge(edge);
-            if(iterator != null)//если такое ребро есть
+            if(containsEdge(edge))//если такое ребро есть
             {
-                iterator.remove();
-                countEdges--;
+                Optional<ListIterator<Edge>> iteratorOpt = getIteratorEdge(edge);
+                if(!iteratorOpt.isEmpty()) {
+                    ListIterator<Edge> iterator = iteratorOpt.get();
+                    iterator.remove();
+                    countEdges--;
+                }
             }
             else{
                 throw new IndexOutOfBoundsException("Edge with vertex numbers"+vertex1+" and "+vertex2+" does not exist");
@@ -126,13 +149,18 @@ public class Graph {
         }
     }
 
+    public void setEdges(ArrayList<Edge> edges){
+        if(edges!=null) {
+            this.edges = edges;
+        }
+    }
 
     private void fillEdges(ArrayList<Edge> edges, ArrayList<ArrayList<Integer>> matrix){
         for(int i = 0 ;i<matrix.size();i++)
         {
             for(int j = i ;j<matrix.size();j++){
                 Integer weight = matrix.get(i).get(j);
-                if(weight != -1){
+                if(weight!=null){
                     edges.add(new Edge(i,j,weight));
                     countEdges++;
                 }
@@ -141,40 +169,35 @@ public class Graph {
     }
 
     private void fillVertexes(ArrayList<Integer>vertexes,ArrayList<ArrayList<Integer>> matrix){
-        for(int i = 0; i<matrix.size(); i++){
+        for(int i = 0 ;i<matrix.size();i++){
             vertexes.add(i);
         }
     }
-    private ListIterator<Edge> containsEdge(Edge edge){
+
+   public boolean containsEdge(Edge edge){
+          ListIterator<Edge> iterator = edges.listIterator();
+          while(iterator.hasNext()){
+              Edge tempEdge = iterator.next();
+              if(edge.comparisonIncidentVertexes(tempEdge)){
+                  return true;
+              }
+          }
+          return false;
+      }
+
+    private Optional<ListIterator<Edge>> getIteratorEdge(Edge edge){
         ListIterator<Edge> iterator = edges.listIterator();
         while(iterator.hasNext()){
             Edge tempEdge = iterator.next();
             if(edge.comparisonIncidentVertexes(tempEdge)){
-                return iterator;
+                break;
             }
         }
-        return null;
+        if(iterator.hasPrevious()){
+            iterator.previous();
+        }
+        return Optional.ofNullable(iterator);
     }
-
-//    private boolean containsEdge(Edge edge){
-//        ListIterator<Edge> iterator = edges.listIterator();
-//        while(iterator.hasNext()){
-//            Edge tempEdge = iterator.next();
-//            if(edge.comparisonIncidentVertexes(tempEdge)){
-//                return true;
-//            }
-//        }
-//        return false;
-//    }
-//
-//    private Optional<ListIterator> getIteratorEdge(Edge edge){
-//        ListIterator<Edge> iterator = edges.listIterator();
-//        if (containsEdge(edge)){
-//            return Optional.ofNullable(ListIterator<Edge> edge);
-//        }
-//        return Optional.empty();
-//    }
-
 
     public Graph copyGraph(){
         return new Graph(this.edges,this.vertexes);
@@ -186,10 +209,10 @@ public class Graph {
 
     @Override
     public boolean equals(Object object) {
-        if(object == this){
+        if(object==this){
             return true;
         }
-        if(object == null || object.getClass() != this.getClass()){
+        if(object==null||object.getClass()!=this.getClass()){
             return false;
         }
         Graph graph = (Graph) object;
@@ -202,4 +225,5 @@ public class Graph {
                 this.countVertexes==graph.countVertexes && this.vertexes.equals(graph.vertexes);
 
     }
+
 }

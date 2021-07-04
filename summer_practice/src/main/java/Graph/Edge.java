@@ -4,11 +4,12 @@ public class Edge {
     private int vertex1;
     private int vertex2;
     private int weight;
+    private boolean markLastAdded = false;
 
     public Edge(int v1,int v2,int weight){
-        this.vertex1 = v1;
-        this.vertex2 = v2;
-        this.weight = weight;
+        this.vertex1=v1;
+        this.vertex2=v2;
+        this.weight=weight;
     }
 
     public Edge(int v1,int v2){
@@ -29,7 +30,7 @@ public class Edge {
     {
         return weight;
     }
-    // cравнение ребер
+
     public boolean comparisonIncidentVertexes(Edge edge){
         return this.vertex1==edge.getVertex1() && this.vertex2==edge.getVertex2() || this.vertex2==edge.getVertex1() && this.vertex1==edge.getVertex2();
     }
@@ -46,6 +47,13 @@ public class Edge {
        return this.comparisonIncidentVertexes(edge) && edge.weight==this.weight;
     }
 
+    public void setMarkLastAdded(boolean mark){
+        markLastAdded=mark;
+    }
+    public boolean getMarkLastAdded(){return  markLastAdded;}
 
-
+    @Override
+    public String toString() {
+        return "v1:" + vertex1+ " v2:"+vertex2 +" weight"+weight+"\n";
+    }
 }

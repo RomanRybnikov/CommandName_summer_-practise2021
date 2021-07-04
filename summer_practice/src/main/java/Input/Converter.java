@@ -7,10 +7,10 @@ public class Converter {
         ArrayList<ArrayList<Integer>> matrix = new ArrayList<>();
         String[] splitMatrix = stringMatrix.split("\n");
 
-        for(int i = 0; i<splitMatrix.length; i++){
+        for(int i = 0 ;i<splitMatrix.length;i++){
             matrix.add(new ArrayList<>());
             String[] row = splitMatrix[i].split(" ");
-            for(int j = 0; j<row.length; j++){
+            for(int j = 0 ;j<row.length;j++){
                 if(row[j].equals("-")){
                     matrix.get(i).add(null);
                 }else {
@@ -25,4 +25,14 @@ public class Converter {
         String[] split = stringEdge.split(" ");
         return new Edge(Integer.parseInt(split[0]),Integer.parseInt(split[1]),Integer.parseInt(split[2]));
     }
+
+    public static int[] convertStringLimits(String stringLimits){
+        int[] limits = new int[4];
+        String[] splitLimits = stringLimits.split(" ");
+        for(int i = 0 ;i<4;i++){
+            limits[i] = Integer.parseInt(splitLimits[i]);
+        }
+        return limits;
+    }
+
 }

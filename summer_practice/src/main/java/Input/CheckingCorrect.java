@@ -3,42 +3,22 @@ package Input;
 import java.util.ArrayList;
 
 public class CheckingCorrect {
-    private static boolean isEmptyMatrix(String matrix){
-        if (matrix.isEmpty()) return false;
-        return true;
-    }
 
-    private static boolean checkSymbolsAtStringMatrix(String matrix){
-        for (int i = 0; i < matrix.length(); i++){
+    private static boolean isEmptyMatrix(String matrix){
+        return matrix.isEmpty();
+    }
+    private static boolean checkSymbolsAtStringMatrix(String matrix,ArrayList<ArrayList<Integer>> intMatrix,String[] stringMatrix){
+        for(int i = 0 ;i<matrix.length();i++){
             char c = matrix.charAt(i);
             if(!(c>='0' && c<='9' || c == ' ' || c=='\n' || c=='-') ){
                 return false;
             }
         }
-        return true;
-    }
 
-//    public static void fillMatrix...(){}  тут я бы хотел заменить всё с первого for-a ниже
-
-    private static boolean checkSizeMatrix(ArrayList<ArrayList<Integer>> intMatrix, int size){
-        for (ArrayList<Integer>list : intMatrix) {
-            if (list.size() != size) return false;
-        }
-        return true;
-    }
-
-    private static boolean checkCorrectStringMatrix(String matrix){
-        isEmptyMatrix(matrix);
-        matrix = matrix.trim();
-        checkSymbolsAtStringMatrix(matrix);
-
-        String[] stringMatrix = matrix.split("\n");
-        ArrayList<ArrayList<Integer>> intMatrix = new ArrayList<>();
-
-        for(int i = 0; i<stringMatrix.length; i++){
+        for(int i = 0 ;i<stringMatrix.length;i++){
             intMatrix.add(new ArrayList<>());
             String[] row = stringMatrix[i].split(" ");
-            for(int j = 0; j < row.length; j++){
+            for(int j = 0 ;j<row.length;j++){
                 try{
                     if(row[j].equals("-")){
                         intMatrix.get(i).add(null);
@@ -53,29 +33,67 @@ public class CheckingCorrect {
             }
         }
 
-        int size = intMatrix.size();
-        checkSizeMatrix(intMatrix, size);
-
         return true;
     }
-
-
-    private static boolean checkEmptyMatrix(ArrayList<ArrayList<Integer>> matrix){
-        if(matrix == null) return  false;
-        return  true;
-    }
-
-    private static boolean checkSquareMatrix(ArrayList<ArrayList<Integer>> matrix, int sizeMatrix){
-        for(ArrayList<Integer> list:matrix){//проверка на квадратную матрицу
-            if(list.size() != sizeMatrix){
+    private static boolean checkCorrectSizeMatrix(ArrayList<ArrayList<Integer>> intMatrix){
+        int size=intMatrix.size();
+        for(ArrayList<Integer> list:intMatrix){
+            if(list.size()!=size){
                 return false;
             }
         }
         return true;
     }
 
-    private static boolean checkSymmetryMatrix(ArrayList<ArrayList<Integer>> matrix, int sizeMatrix){
-        for(int i = 0 ;i<matrix.size();i++) {//проверка на симметричность матрицы
+    public static boolean checkCorrectStringMatrix(String matrix){
+        if(isEmptyMatrix(matrix)){
+            return false;
+        }
+
+        String[] stringMatrix = matrix.split("\n");
+        ArrayList<ArrayList<Integer>> intMatrix = new ArrayList<>();
+        matrix=matrix.trim();
+
+        if(!checkSymbolsAtStringMatrix(matrix,intMatrix,stringMatrix)){
+            return false;
+        }
+
+        if(!checkCorrectSizeMatrix(intMatrix)){
+            return false;
+        }
+
+        return true;
+    }
+
+    public static boolean checkingCorrectStringEdge(String edge){
+        String[] edgeSplit = edge.split(" ");
+        if(edgeSplit.length!=3){
+            return false;
+        }
+        for(int i = 0; i<3;i++){
+            try{
+                Integer.parseInt(edgeSplit[i]);
+            }catch (NumberFormatException e){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static boolean checkCorrectMatrix(ArrayList<ArrayList<Integer>> matrix){
+        if(matrix==null){
+            return false;
+        }
+
+        int size=matrix.size();
+        for(ArrayList<Integer> list:matrix){//проверка на квадратную матрицу
+            if(list.size()!=size){
+                return false;
+            }
+        }
+
+        for(int i = 0 ;i<matrix.size();i++)//проверка на симметричность матрицы
+        {
             for(int j = i+1 ;j<matrix.size();j++){
                 if(matrix.get(i).get(j) != matrix.get(j).get(i)){
                     return false;
@@ -85,12 +103,21 @@ public class CheckingCorrect {
         return true;
     }
 
-    public static boolean checkCorrectMatrix(ArrayList<ArrayList<Integer>> matrix){
-        checkEmptyMatrix(matrix);
-        int size = matrix.size();
-        checkSquareMatrix(matrix, size);
-        checkSymmetryMatrix(matrix, size);
+    public static boolean checkCorrectStringLimits(String limits){
+        String[] splitLimits = limits.split(" ");
+        if(splitLimits.length!=4){
+            return false;
+        }
+        for(int i = 0 ;i<4;i++){
+            try {
+                Integer.parseInt(splitLimits[i]);
+            }catch (NumberFormatException ex){
+                return false;
+            }
+        }
         return true;
     }
+
+
 
 }

@@ -3,14 +3,16 @@ package GUI;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.IOException;
 
-
-
+import org.jetbrains.annotations.NotNull;
 
 public class Gui extends JFrame {
     private JPanel mainContainer;
     private BorderLayout mainLayout;
-    private JPanel graphPanel;
+    private GraphVisualization graphVisualization;
 
     private JButton buttonNext;
     private JButton buttonPrev;
@@ -20,6 +22,11 @@ public class Gui extends JFrame {
     private JButton buttonAddEdge;
     private JButton buttonInputGraph;
     private JButton buttonGenerateGraph;
+    private JButton buttonStop;
+
+    private JLabel labelInputEdgeHint;
+    private JLabel labelInputGraphHint;
+    private JLabel labelInputLimitsHint;
 
     private JLabel emptyLabelAddVertex;
     private JTextArea textInputAddGraph;
@@ -27,12 +34,17 @@ public class Gui extends JFrame {
     private JScrollPane inputGraphScrollPane;
     private JTextField textInputAddEdge;
 
-    public Gui(){
+
+
+    public Gui(GraphVisualization graphVisualization){
         setDefaultCloseOperation(EXIT_ON_CLOSE);
+
+        this.graphVisualization=graphVisualization;
+
         init();
         initWindowSettings();
         setElements();
-        setButtonListeners();
+        createMenu();
     }
 
     private void setElements(){
@@ -55,10 +67,6 @@ public class Gui extends JFrame {
         mainContainer = new JPanel();
         mainLayout = new BorderLayout();
 
-
-        graphPanel=new JPanel();
-        graphPanel.setBackground(Color.GRAY);
-
         buttonNext = new JButton(">");
         buttonPrev = new JButton("<");
         buttonStart = new JButton("START");
@@ -67,17 +75,18 @@ public class Gui extends JFrame {
         buttonGenerateGraph = new JButton("Generate Graph");
         textInputLimitsForGenerateGraph = new JTextField();
         buttonInputGraph = new JButton("Input graph");
-
         textInputAddGraph = new JTextArea();
         textInputAddEdge = new JTextField();
+        textInputLimitsForGenerateGraph = new JTextField();
         emptyLabelAddVertex=new JLabel();
         inputGraphScrollPane = new JScrollPane(textInputAddGraph);
-        buttonEnd = new JButton("END");
+        buttonEnd = new JButton("TO END");
+        buttonStop = new JButton("STOP");
 
     }
 
     private void initWindowSettings(){
-        setSize(900,700);
+        setSize(1100,800);
         setResizable(false);
         setTitle("Boruvka");
     }
@@ -107,7 +116,7 @@ public class Gui extends JFrame {
 
 
     }
-
+;
     private void setWestPanel(JPanel westPanel){
         westPanel.setBorder(new EmptyBorder(4,4,4,4));
         GridBagLayout westLayout = new GridBagLayout();
@@ -126,6 +135,9 @@ public class Gui extends JFrame {
 
         westConstraints.gridy=2;
         westPanel.add(buttonGenerateGraph,westConstraints);
+
+        westConstraints.gridy=3;
+        westPanel.add(textInputLimitsForGenerateGraph,westConstraints);
     }
 
     private void setSouthPanel(JPanel southPanel){
@@ -149,18 +161,91 @@ public class Gui extends JFrame {
 
         southConstraints.gridx=3;
         southPanel.add(buttonEnd,southConstraints);
+
+        southConstraints.gridx=4;
+        southPanel.add(buttonStop,southConstraints);
     }
 
     private void setMainContainer(JPanel eastPanel,JPanel westPanel,JPanel southPanel){
-        mainContainer.add(graphPanel,BorderLayout.CENTER);
+        mainContainer.add(graphVisualization,BorderLayout.CENTER);
         mainContainer.add(eastPanel,BorderLayout.EAST);
         mainContainer.add(westPanel,BorderLayout.WEST);
         mainContainer.add(southPanel,BorderLayout.SOUTH);
     }
 
-    private void setButtonListeners(){
-
+    public String getTextAtInputAddGraph(){
+        return textInputAddGraph.getText();
     }
 
+
+    public String getTextAtInputLimits(){
+        return textInputLimitsForGenerateGraph.getText();
+    }
+
+    public String getTextAtInputAddEdge(){
+        return textInputAddEdge.getText();
+    }
+
+    public void setGraphVisualization(GraphVisualization visualization){
+        mainContainer.remove(graphVisualization);
+        graphVisualization = visualization;
+        mainContainer.add(graphVisualization,BorderLayout.CENTER);
+        mainContainer.repaint();
+        mainContainer.revalidate();
+    }
+
+    public void setButtonInputGraphListener(ActionListener listener){
+        buttonInputGraph.addActionListener(listener);
+    }
+
+    public void setButtonInputAddVertexListener(ActionListener listener){
+        buttonAddVertex.addActionListener(listener);
+    }
+
+    public void setButtonInputAddEdgeListener(ActionListener listener){
+        buttonAddEdge.addActionListener(listener);
+    }
+
+    public void setButtonGenerateGraphListener(ActionListener listener){
+        buttonGenerateGraph.addActionListener(listener);
+    }
+
+    public void setButtonStartListener(ActionListener listener){
+        buttonStart.addActionListener(listener);
+    }
+
+    public void setButtonStopListener(ActionListener listener){
+        buttonStop.addActionListener(listener);
+    }
+
+    public void setButtonNextListener(ActionListener listener){
+        buttonNext.addActionListener(listener);
+    }
+
+    public void setButtonPrevListener(ActionListener listener){
+        buttonPrev.addActionListener(listener);
+    }
+
+    public void setButtonEndListener(ActionListener listener){
+        buttonEnd.addActionListener(listener);
+    }
+
+    private void createMenu(){
+        JMenuBar menuBar = new JMenuBar();
+
+        JMenu info = new JMenu("info");
+        JMenuItem information = new JMenuItem("info");
+        info.add(information);
+
+        information.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Info inf = new Info();
+                inf.setVisible(true);
+            }
+        });
+        menuBar.add(info);
+        setJMenuBar(menuBar);
+    }
 
 }

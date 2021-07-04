@@ -127,30 +127,33 @@ class GraphTest {
 
     @Test
     void addEdge() {
-        Graph graph = defaultGraph.copyGraph();
-        Edge newEdge = new Edge(1,2,12);
-        graph.addEdge(newEdge);
+        try {
+            Graph graph = defaultGraph.copyGraph();
+            Edge newEdge = new Edge(1, 2, 12);
+            graph.addEdge(newEdge);
 
-        int actualCount = graph.getCountEdges();
-        int expectedCount = 9;
-        assertEquals(actualCount,expectedCount);
+            int actualCount = graph.getCountEdges();
+            int expectedCount = 9;
+            assertEquals(actualCount, expectedCount);
 
-        Edge edge = graph.getEdges().get(graph.getEdges().size()-1);
-        boolean actualEqual = edge.equals(newEdge);
-        boolean expectedEqual = true;
-        assertEquals(actualEqual,expectedEqual);
+            Edge edge = graph.getEdges().get(graph.getEdges().size() - 1);
+            boolean actualEqual = edge.equals(newEdge);
+            boolean expectedEqual = true;
+            assertEquals(actualEqual, expectedEqual);
 
-        newEdge = new Edge(1,2,10);
-        graph.addEdge(newEdge);
-        actualCount = graph.getCountEdges();
-        expectedCount = 9;
-        assertEquals(actualCount,expectedCount);
+            newEdge = new Edge(1, 2, 10);
+            graph.addEdge(newEdge);
+            actualCount = graph.getCountEdges();
+            expectedCount = 9;
+            assertEquals(actualCount, expectedCount);
 
-        edge = graph.getEdges().get(graph.getEdges().size()-1);
-        actualEqual = edge.equals(newEdge);
-        expectedEqual = true;
-        assertEquals(actualEqual,expectedEqual);
-
+            edge = graph.getEdges().get(graph.getEdges().size() - 1);
+            actualEqual = edge.equals(newEdge);
+            expectedEqual = true;
+            assertEquals(actualEqual, expectedEqual);
+        }catch (IOException ex){
+            System.out.println(ex.getMessage());
+        }
     }
 
     @Test
