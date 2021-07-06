@@ -1,15 +1,25 @@
 package GUI;
+import Controller.EdgeHandler;
+import Controller.ElementHandler;
+import Controller.VertexHandler;
+
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class GraphVisualization extends JPanel {
+public class GraphVisualization extends JPanel implements MouseListener {
     ArrayList<VertexVisualization> vertexes;
     ArrayList<EdgeVisualization> edges;
     private  float panel_radius;
     private final int HEIGHT = 700;
     private final int WIDTH = 800;
+
+    VertexHandler vHandler;
+    EdgeHandler eHandler;
+
 
     public static final int RADIUS = 20;
 
@@ -18,6 +28,7 @@ public class GraphVisualization extends JPanel {
         this.edges=edges;
         vertexes.forEach((v)->v.setRadius(RADIUS));
         setCoordinates();
+        addMouseListener(this);
     }
 
     public void setVertexes(ArrayList<VertexVisualization> v){
@@ -58,6 +69,14 @@ public class GraphVisualization extends JPanel {
         }
     }
 
+    public void setVertexHandler(ElementHandler vertexHandler){
+        this.vHandler = (VertexHandler) vertexHandler;
+    }
+
+    public void setEdgeHandler(ElementHandler edgeHandler){
+        this.eHandler = (EdgeHandler) edgeHandler;
+    }
+
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -68,12 +87,85 @@ public class GraphVisualization extends JPanel {
             }
 
             for(VertexVisualization v:vertexes){
-                v.setColor(Color.BLUE);
+                v.setColor(Color.GREEN);
                 v.draw(graphics);
             }
         }catch (NumberFormatException e){
             System.out.println(e.getMessage());
         }
         setSize(WIDTH,HEIGHT);
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        if(e.getButton()==MouseEvent.BUTTON3 || e.getButton()==MouseEvent.BUTTON1){
+            float x = e.getX();
+            float y = e.getY();
+            for(VertexVisualization vertex:vertexes){
+                float xVertex = vertex.getCoordX();
+                float yVertex = vertex.getCoordY();
+                float radius  = vertex.getRadius();
+
+                if(xVertex <= x+radius && xVertex>=x-radius && yVertex<=y+radius && yVertex>=y-radius){
+                    vHandler.setVertex(vertex);
+                    vHandler.setNumButton(e.getButton());
+                    vHandler.processing();
+                    return;
+                }
+            }
+            for (EdgeVisualization edge : edges) {
+                VertexVisualization v1 = edge.getVertex1();
+                VertexVisualization v2 = edge.getVertex2();
+                float x0 = v1.getCoordX();
+                float x1 = v2.getCoordX();
+                float y0 = v1.getCoordY();
+                float y1 = v2.getCoordY();
+
+                if (lineContainsPoint(x,y,x0,y0,x1,y1)) {
+                    eHandler.setEdge(edge);
+                    eHandler.setNumButton(e.getButton());
+                    eHandler.setCoords((int) x, (int) y);
+                    eHandler.processing();
+                    return;
+                }
+            }
+        }
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+
+    }
+
+    private boolean lineContainsPoint(float x,float y,float x0,float y0,float x1,float y1){
+        float diff = 0.5f;
+        if(Math.abs(x0-x1)<diff){//для вертикальной прямой
+            diff=1.0f;
+            return  Math.abs(x-x0)<diff && y<Math.max(y0,y1) && y>Math.min(y0,y1);
+        }
+        diff=0.5f;
+        if(Math.abs(y0-y1)<diff){//для горизонтальной
+            diff=1.0f;
+            return  Math.abs(y-y0)<diff && x<Math.max(x0,x1) && x>Math.min(x0,x1);
+        }
+        diff = 0.03f;
+
+
+        return Math.abs((x - x0) / (x1 - x0) - (y - y0) / (y1 - y0)) < diff && x < Math.max(x0, x1) && x > Math.min(x0, x1) && y < Math.max(y0, y1) && y > Math.min(y0, y1);
     }
 }

@@ -13,6 +13,7 @@ public class Graph {
     private ArrayList<Integer> vertexes;
     private int countVertexes;
     private int countEdges;
+    public final static Integer EMPTY_EDGE = -1;
 
     public Graph(){
         vertexes = new ArrayList<>();
@@ -78,7 +79,7 @@ public class Graph {
         return vertexes;
     }
 
-    public void addVertex(){
+    public Integer addVertex(){
         ListIterator<Integer> iterator = vertexes.listIterator();
         int index = 0;
         while (iterator.hasNext()){//вставляем в первое "пустое" место
@@ -87,12 +88,13 @@ public class Graph {
                 iterator.previous();
                 iterator.add(index);
                 countVertexes++;
-                return;
+                return index;
             }
             index++;
         }
         vertexes.add(countVertexes);
         countVertexes++;
+        return countVertexes-1;
     }
 
     public void deleteVertex(int vertex) throws IndexOutOfBoundsException{
@@ -120,7 +122,7 @@ public class Graph {
 
         if(containsEdge(edge)){//если ребро инцидентное данным вершинам уже есть, то заменяем его
             Optional<ListIterator<Edge>> iteratorOpt = getIteratorEdge(edge);
-            if(!iteratorOpt.isEmpty()) {
+            if(iteratorOpt.isPresent()) {
                 ListIterator<Edge> iterator = iteratorOpt.get();
                 iterator.set(edge);
             }
@@ -137,7 +139,7 @@ public class Graph {
             if(containsEdge(edge))//если такое ребро есть
             {
                 Optional<ListIterator<Edge>> iteratorOpt = getIteratorEdge(edge);
-                if(!iteratorOpt.isEmpty()) {
+                if(iteratorOpt.isPresent()) {
                     ListIterator<Edge> iterator = iteratorOpt.get();
                     iterator.remove();
                     countEdges--;
@@ -160,7 +162,7 @@ public class Graph {
         {
             for(int j = i ;j<matrix.size();j++){
                 Integer weight = matrix.get(i).get(j);
-                if(weight!=null){
+                if(!weight.equals(EMPTY_EDGE)){
                     edges.add(new Edge(i,j,weight));
                     countEdges++;
                 }
@@ -216,8 +218,8 @@ public class Graph {
             return false;
         }
         Graph graph = (Graph) object;
-        ArrayList<Edge> edges1 = (ArrayList<Edge>) this.edges.clone();
-        ArrayList<Edge> edges2 = (ArrayList<Edge>) graph.edges.clone();
+        ArrayList<Edge> edges1 = new ArrayList<Edge>(this.edges);
+        ArrayList<Edge> edges2 = new ArrayList<Edge>(graph.edges);
         edges1.sort(Comparator.comparingInt(Edge::getWeight));
         edges2.sort(Comparator.comparingInt(Edge::getWeight));
 

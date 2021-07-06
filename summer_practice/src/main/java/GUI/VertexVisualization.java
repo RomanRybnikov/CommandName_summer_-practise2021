@@ -80,6 +80,10 @@ public class VertexVisualization {
         }
     }
 
+    public int getVertexNum(){
+        return vertexNum;
+    }
+
     @Override
     public String toString() {
         return Integer.toString(vertexNum);

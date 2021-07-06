@@ -8,4 +8,3 @@ public class Main {
         controller.start();
     }
 }
-// тест для гита 5ваыыв

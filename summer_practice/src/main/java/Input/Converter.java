@@ -2,6 +2,8 @@ package Input;
 
 import java.util.ArrayList;
 import Graph.Edge;
+import Graph.Graph;
+
 public class Converter {
     public static ArrayList<ArrayList<Integer>> convertStringMatrix(String stringMatrix){//преобразует введенную строковую матрицу в ArrayList<ArrayList<>>
         ArrayList<ArrayList<Integer>> matrix = new ArrayList<>();
@@ -12,7 +14,7 @@ public class Converter {
             String[] row = splitMatrix[i].split(" ");
             for(int j = 0 ;j<row.length;j++){
                 if(row[j].equals("-")){
-                    matrix.get(i).add(null);
+                    matrix.get(i).add(Graph.EMPTY_EDGE);
                 }else {
                     matrix.get(i).add(Integer.parseInt(row[j]));
                 }

@@ -1,13 +1,18 @@
 package Input;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.concurrent.ArrayBlockingQueue;
+
+import Graph.*;
 
 public class CheckingCorrect {
 
     private static boolean isEmptyMatrix(String matrix){
         return matrix.isEmpty();
     }
-    private static boolean checkSymbolsAtStringMatrix(String matrix,ArrayList<ArrayList<Integer>> intMatrix,String[] stringMatrix){
+    private static boolean checkSymbolsAtStringMatrix(String matrix,String[] stringMatrix){
         for(int i = 0 ;i<matrix.length();i++){
             char c = matrix.charAt(i);
             if(!(c>='0' && c<='9' || c == ' ' || c=='\n' || c=='-') ){
@@ -16,29 +21,35 @@ public class CheckingCorrect {
         }
 
         for(int i = 0 ;i<stringMatrix.length;i++){
-            intMatrix.add(new ArrayList<>());
-            String[] row = stringMatrix[i].split(" ");
-            for(int j = 0 ;j<row.length;j++){
-                try{
-                    if(row[j].equals("-")){
-                        intMatrix.get(i).add(null);
+            String[] line = stringMatrix[i].split(" ");
+            for(int j = 0;j<line.length;j++ ) {
+                try {
+                    if (!line[j].equals("-")){
+                        Integer.parseInt(line[j]);
                     }
-                    else {
-                        intMatrix.get(i).add(Integer.parseInt(row[j]));
-                    }
-                }catch (NumberFormatException e){
+                } catch (NumberFormatException e) {
                     return false;
                 }
-
             }
         }
 
         return true;
     }
-    private static boolean checkCorrectSizeMatrix(ArrayList<ArrayList<Integer>> intMatrix){
-        int size=intMatrix.size();
-        for(ArrayList<Integer> list:intMatrix){
-            if(list.size()!=size){
+    private static boolean checkCorrectSizeMatrix(String[] stringMatrix){
+
+        int size=stringMatrix.length;
+        for(int i = 0 ;i<stringMatrix.length;i++){
+            String[] line = stringMatrix[i].split(" ");
+            if(line.length!=size){
+                return false;
+            }
+        }
+        return true;
+    }
+    private static boolean checkDiagonal(String[] stringMatrix){
+        for(int i = 0 ;i<stringMatrix.length;i++){
+            String[] line = stringMatrix[i].split(" ");
+            if(!line[i].equals("-")){
                 return false;
             }
         }
@@ -46,23 +57,9 @@ public class CheckingCorrect {
     }
 
     public static boolean checkCorrectStringMatrix(String matrix){
-        if(isEmptyMatrix(matrix)){
-            return false;
-        }
-
-        String[] stringMatrix = matrix.split("\n");
-        ArrayList<ArrayList<Integer>> intMatrix = new ArrayList<>();
         matrix=matrix.trim();
-
-        if(!checkSymbolsAtStringMatrix(matrix,intMatrix,stringMatrix)){
-            return false;
-        }
-
-        if(!checkCorrectSizeMatrix(intMatrix)){
-            return false;
-        }
-
-        return true;
+        String[] stringMatrix = matrix.split("\n");
+        return !isEmptyMatrix(matrix) && checkSymbolsAtStringMatrix(matrix,stringMatrix) && checkCorrectSizeMatrix(stringMatrix) && checkDiagonal(stringMatrix);
     }
 
     public static boolean checkingCorrectStringEdge(String edge){
@@ -118,6 +115,37 @@ public class CheckingCorrect {
         return true;
     }
 
+    public static boolean checkCorrectGraphForBoruvka(Graph graph){//проверка на то что граф связный
+        if(graph.getVertexes().size()<2){
+            return false;
+        }
 
+        boolean[] added = new boolean[graph.getVertexes().size()];
+        Arrays.fill(added,false);
+        LinkedList<Integer> vertexQueue = new LinkedList<Integer>();
 
+        Integer vertex = graph.getEdges().get(0).getVertex1();
+        added[graph.getVertexes().indexOf(vertex)] = true;
+        vertexQueue.addLast(vertex);
+        do{
+            vertex = vertexQueue.pollFirst();
+            for (Edge edge : graph.getEdges()) {
+                if (edge.getVertex1() == vertex || edge.getVertex2() == vertex) {
+                    int v = (edge.getVertex1() == vertex) ? edge.getVertex2() : edge.getVertex1();
+                    int index = graph.getVertexes().indexOf(v);
+                    if (!added[index]) {
+                        added[index] = true;
+                        vertexQueue.addLast(v);
+                    }
+                }
+            }
+        }while(!vertexQueue.isEmpty());
+
+        for(int i = 0 ; i<added.length;i++){
+            if(!added[i]){
+                return false;
+            }
+        }
+        return true;
+    }
 }

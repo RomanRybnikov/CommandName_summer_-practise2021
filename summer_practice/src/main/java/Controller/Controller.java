@@ -8,12 +8,15 @@ import Input.CheckingCorrect;
 import Input.Converter;
 import Boruvka.*;
 
+import javax.swing.*;
+import javax.swing.text.Style;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 
 public class Controller {
@@ -34,7 +37,7 @@ public class Controller {
     StopListener stopListener;
     EndListener endListener;
 
-    boolean algoStart = false;
+    static boolean algoStart = false;
 
     public Controller(){
         addGraphListener = new AddGraphListener();
@@ -46,23 +49,19 @@ public class Controller {
         prevListener = new PrevListener();
         stopListener = new StopListener();
         endListener = new EndListener();
+
     }
 
     public void start(){
-
-        GraphGenerator generator = null;
-        try {
-             generator = new GraphGenerator(10, 11, 2, 10);
-        }catch (IOException e){
-            System.out.println(e.getMessage());
-        }
-
         graph = new Graph();
         edges = new ArrayList<>();
         vertexes = new ArrayList<>();
 
         graphVisualization = new GraphVisualization(vertexes,edges);
         gui = new Gui(graphVisualization);
+
+        graphVisualization.setVertexHandler(new VertexHandler(this));
+        graphVisualization.setEdgeHandler(new EdgeHandler(Controller.this));
         setGuiButtonsListeners();
         gui.setVisible(true);
     }
@@ -83,8 +82,22 @@ public class Controller {
         if (edgesOpt.isPresent()) {
             ArrayList<Edge> edgesList = edgesOpt.get();
             edges.clear();
+            vertexes.clear();
+            for(Integer v:graph.getVertexes()){
+                vertexes.add(new VertexVisualization(v));
+            }
             for(Edge edge:graph.getEdges()){
-                EdgeVisualization edgeVisualization = new EdgeVisualization(vertexes.get(edge.getVertex1()),vertexes.get(edge.getVertex2()),edge.getWeight());
+                VertexVisualization v1 = null;
+                VertexVisualization v2 = null;
+                for(VertexVisualization v:vertexes){
+                    if(v.getVertexNum()==edge.getVertex1()){
+                        v1=v;
+                    }
+                    if(v.getVertexNum()==edge.getVertex2()){
+                        v2=v;
+                    }
+                }
+                EdgeVisualization edgeVisualization = new EdgeVisualization(v1,v2,edge.getWeight());
                 for(Edge edge2:edgesList){
                     if(edge2.equals(edge)){
                         if(edge2.getMarkLastAdded()){
@@ -99,6 +112,7 @@ public class Controller {
             }
 
         }
+        graphVisualization.setVertexes(vertexes);
         graphVisualization.setEdges(edges);
         gui.setGraphVisualization(graphVisualization);
     }
@@ -107,7 +121,8 @@ public class Controller {
         @Override
         public void actionPerformed(ActionEvent e) {
             if(algoStart){
-                System.out.println("not available while the algorithm is running");
+                JOptionPane.showOptionDialog(graphVisualization,"Недоступно, пока работает алгоритм!","information",
+                        JOptionPane.DEFAULT_OPTION,JOptionPane.INFORMATION_MESSAGE,null,null,null);
                 return;
             }
             try {
@@ -129,10 +144,13 @@ public class Controller {
 
                     graphVisualization.setVertexes(vertexes);
                     graphVisualization.setEdges(edges);
+                    graphVisualization.setVertexHandler(new VertexHandler(Controller.this));
+                    graphVisualization.setEdgeHandler(new EdgeHandler(Controller.this));
                     gui.setGraphVisualization(graphVisualization);
                 }
                 else {
-                    System.out.println("wrong matrix!");
+                    JOptionPane.showOptionDialog(graphVisualization,"Неверная матрица смежности!","information",
+                            JOptionPane.DEFAULT_OPTION,JOptionPane.INFORMATION_MESSAGE,null,null,null);
                 }
             }catch (IOException ex){
                 System.out.println(ex.getMessage());
@@ -145,12 +163,31 @@ public class Controller {
         @Override
         public void actionPerformed(ActionEvent e) {
             if(algoStart){
-                System.out.println("not available while the algorithm is running");
+                JOptionPane.showOptionDialog(graphVisualization,"Недоступно, пока работает алгоритм!","information",
+                        JOptionPane.DEFAULT_OPTION,JOptionPane.INFORMATION_MESSAGE,null,null,null);
                 return;
             }
+            edges.clear();
+            vertexes.clear();
+
             graph.addVertex();
-            vertexes.add(new VertexVisualization(graph.getVertexes().size()-1));
+
+            for(Integer v:graph.getVertexes()){
+                vertexes.add(new VertexVisualization(v));
+            }
+
+            for(Edge edge:graph.getEdges()){
+                int vertex1  = edge.getVertex1();
+                int vertex2 = edge.getVertex2();
+                int indexVertex1 = graph.getVertexes().indexOf(vertex1);
+                int indexVertex2 = graph.getVertexes().indexOf(vertex2);
+                edges.add(new EdgeVisualization(vertexes.get(indexVertex1),vertexes.get(indexVertex2),edge.getWeight()));
+            }
+
             graphVisualization.setVertexes(vertexes);
+            graphVisualization.setEdges(edges);
+            graphVisualization.setVertexHandler(new VertexHandler(Controller.this));
+            graphVisualization.setEdgeHandler(new EdgeHandler(Controller.this));
             gui.setGraphVisualization(graphVisualization);
         }
     }
@@ -160,7 +197,8 @@ public class Controller {
         @Override
         public void actionPerformed(ActionEvent e) {
             if(algoStart){
-                System.out.println("not available while the algorithm is running");
+                JOptionPane.showOptionDialog(graphVisualization,"Недоступно, пока работает алгоритм","information",
+                        JOptionPane.DEFAULT_OPTION,JOptionPane.INFORMATION_MESSAGE,null,null,null);
                 return;
             }
             String stringEdge=gui.getTextAtInputAddEdge();
@@ -175,10 +213,16 @@ public class Controller {
                     }
 
                     graphVisualization.setEdges(edges);
+                    graphVisualization.setVertexHandler(new VertexHandler(Controller.this));
+                    graphVisualization.setEdgeHandler(new EdgeHandler(Controller.this));
                     gui.setGraphVisualization(graphVisualization);
                 }catch (IOException ex){
-                    System.out.println(ex.getMessage());
+                    JOptionPane.showOptionDialog(graphVisualization,"Ребро введено неверно!","information",
+                            JOptionPane.DEFAULT_OPTION,JOptionPane.INFORMATION_MESSAGE,null,null,null);
                 }
+            }else{
+                JOptionPane.showOptionDialog(graphVisualization,"Ребро введено неверно!","information",
+                        JOptionPane.DEFAULT_OPTION,JOptionPane.INFORMATION_MESSAGE,null,null,null);
             }
         }
     }
@@ -187,7 +231,8 @@ public class Controller {
         @Override
         public void actionPerformed(ActionEvent e) {
             if(algoStart){
-                System.out.println("not available while the algorithm is running");
+                JOptionPane.showOptionDialog(graphVisualization,"Недоступно, пока работает алгоритм!","information",
+                        JOptionPane.DEFAULT_OPTION,JOptionPane.INFORMATION_MESSAGE,null,null,null);
                 return;
             }
             String stringGenerate = gui.getTextAtInputLimits();
@@ -210,13 +255,17 @@ public class Controller {
 
                     graphVisualization.setVertexes(vertexes);
                     graphVisualization.setEdges(edges);
+                    graphVisualization.setVertexHandler(new VertexHandler(Controller.this));
+                    graphVisualization.setEdgeHandler(new EdgeHandler(Controller.this));
                     gui.setGraphVisualization(graphVisualization);
                 }catch (IOException ex){
-                    System.out.println(ex.getMessage() + " in GenerateGraphListener");
+                    JOptionPane.showOptionDialog(graphVisualization,"Неверно введены параметры графа!","information",
+                            JOptionPane.DEFAULT_OPTION,JOptionPane.INFORMATION_MESSAGE,null,null,null);
                 }
             }
             else {
-                System.out.println("generate limits incorrect");
+                JOptionPane.showOptionDialog(graphVisualization,"Неверно введены параметры графа!","information",
+                        JOptionPane.DEFAULT_OPTION,JOptionPane.INFORMATION_MESSAGE,null,null,null);
             }
         }
     }
@@ -225,9 +274,14 @@ public class Controller {
         @Override
         public void actionPerformed(ActionEvent e) {
             if(!algoStart) {
-                boruvka = new Boruvka(graph);
-                steps = boruvka.getBoruvkaSteps();
-                algoStart = true;
+                if(CheckingCorrect.checkCorrectGraphForBoruvka(graph)) {
+                    boruvka = new Boruvka(graph);
+                    steps = boruvka.getBoruvkaSteps();
+                    algoStart = true;
+                }else{
+                    JOptionPane.showOptionDialog(graphVisualization,"Граф не удовлетворяет условиям работы алгоритма!","information",
+                            JOptionPane.DEFAULT_OPTION,JOptionPane.INFORMATION_MESSAGE,null,null,null);
+                }
             }
         }
     }
@@ -239,7 +293,8 @@ public class Controller {
                 Optional<ArrayList<Edge>> edgesOpt = steps.nextStep();
                 Controller.this.changeStep(edgesOpt);
             }else{
-                System.out.println("not available while the algorithm is not running");
+                JOptionPane.showOptionDialog(graphVisualization,"Недоступно, пока алгоритм не работает!","information",
+                        JOptionPane.DEFAULT_OPTION,JOptionPane.INFORMATION_MESSAGE,null,null,null);
             }
         }
     }
@@ -251,7 +306,8 @@ public class Controller {
                 Optional<ArrayList<Edge>> edgesOpt = steps.prevStep();
                 Controller.this.changeStep(edgesOpt);
             }else{
-                System.out.println("not available while the algorithm is not running");
+                JOptionPane.showOptionDialog(graphVisualization,"Недоступно, пока алгоритм не работает!","information",
+                        JOptionPane.DEFAULT_OPTION,JOptionPane.INFORMATION_MESSAGE,null,null,null);
             }
         }
     }
@@ -263,7 +319,8 @@ public class Controller {
                 Optional<ArrayList<Edge>> edgesOpt = steps.lastStep();
                 Controller.this.changeStep(edgesOpt);
             }else{
-                System.out.println("not available while the algorithm is not running");
+                JOptionPane.showOptionDialog(graphVisualization,"Недоступно, пока не работает алгоритм!","information",
+                        JOptionPane.DEFAULT_OPTION,JOptionPane.INFORMATION_MESSAGE,null,null,null);
             }
         }
     }
@@ -281,16 +338,28 @@ public class Controller {
                 }
 
                 for(Edge edge:graph.getEdges()){
-                    edges.add(new EdgeVisualization(vertexes.get(edge.getVertex1()),vertexes.get(edge.getVertex2()),edge.getWeight()));
+                    VertexVisualization v1 = null;
+                    VertexVisualization v2 = null;
+                    for(VertexVisualization v:vertexes){
+                        if(edge.getVertex1()==v.getVertexNum()){
+                            v1=v;
+                        }
+                        if(edge.getVertex2()==v.getVertexNum()){
+                            v2=v;
+                        }
+                    }
+                    edges.add(new EdgeVisualization(v1,v2,edge.getWeight()));
                 }
 
                 graphVisualization.setVertexes(vertexes);
                 graphVisualization.setEdges(edges);
                 gui.setGraphVisualization(graphVisualization);
             }else{
-                System.out.println("not available while the algorithm is not running");
+                JOptionPane.showOptionDialog(graphVisualization,"Недоступно, пока не работает алгоритм","information",
+                        JOptionPane.DEFAULT_OPTION,JOptionPane.INFORMATION_MESSAGE,null,null,null);
             }
         }
     }
+
 }
 

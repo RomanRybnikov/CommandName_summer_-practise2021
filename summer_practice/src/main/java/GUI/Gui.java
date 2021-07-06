@@ -24,16 +24,15 @@ public class Gui extends JFrame {
     private JButton buttonGenerateGraph;
     private JButton buttonStop;
 
-    private JLabel labelInputEdgeHint;
-    private JLabel labelInputGraphHint;
-    private JLabel labelInputLimitsHint;
-
     private JLabel emptyLabelAddVertex;
     private JTextArea textInputAddGraph;
     private JTextField textInputLimitsForGenerateGraph;
     private JScrollPane inputGraphScrollPane;
     private JTextField textInputAddEdge;
 
+    private JTextField inputEdgeHint;
+    private JTextField inputGraphHint;
+    private JTextField inputLimitsHint;
 
 
     public Gui(GraphVisualization graphVisualization){
@@ -83,10 +82,16 @@ public class Gui extends JFrame {
         buttonEnd = new JButton("TO END");
         buttonStop = new JButton("STOP");
 
+        inputEdgeHint = new JTextField("Формат:<номер вершины><номер вершины><вес>");
+        inputGraphHint = new JTextField("Формат:матрица смежности");
+        inputLimitsHint = new JTextField("Формат:\n<количество ребер><количество вершин><мин. вес><макс. вес>");
+        inputGraphHint.setEditable(false);
+        inputEdgeHint.setEditable(false);
+        inputLimitsHint.setEditable(false);
     }
 
     private void initWindowSettings(){
-        setSize(1100,800);
+        setSize(1600,800);
         setResizable(false);
         setTitle("Boruvka");
     }
@@ -112,11 +117,14 @@ public class Gui extends JFrame {
         eastPanel.add(buttonAddEdge,eastConstraints);
 
         eastConstraints.gridy=3;
+        eastConstraints.weighty=0.1;
+        eastPanel.add(inputEdgeHint,eastConstraints);
+
+        eastConstraints.weighty=0.5;
+        eastConstraints.gridy=4;
         eastPanel.add(textInputAddEdge,eastConstraints);
-
-
     }
-;
+
     private void setWestPanel(JPanel westPanel){
         westPanel.setBorder(new EmptyBorder(4,4,4,4));
         GridBagLayout westLayout = new GridBagLayout();
@@ -130,13 +138,23 @@ public class Gui extends JFrame {
 
         westPanel.add(buttonInputGraph,westConstraints);
 
+        westConstraints.weighty=0.1;
         westConstraints.gridy=1;
+        westPanel.add(inputGraphHint,westConstraints);
+
+        westConstraints.weighty=0.5;
+        westConstraints.gridy=2;
         westPanel.add(inputGraphScrollPane,westConstraints);
 
-        westConstraints.gridy=2;
+        westConstraints.weighty=0.1;
+        westConstraints.gridy=4;
+        westPanel.add(inputLimitsHint,westConstraints);
+
+        westConstraints.weighty=0.5;
+        westConstraints.gridy=3;
         westPanel.add(buttonGenerateGraph,westConstraints);
 
-        westConstraints.gridy=3;
+        westConstraints.gridy=5;
         westPanel.add(textInputLimitsForGenerateGraph,westConstraints);
     }
 
@@ -184,6 +202,10 @@ public class Gui extends JFrame {
 
     public String getTextAtInputAddEdge(){
         return textInputAddEdge.getText();
+    }
+
+    public GraphVisualization getGraphVisualization(){
+        return graphVisualization;
     }
 
     public void setGraphVisualization(GraphVisualization visualization){
