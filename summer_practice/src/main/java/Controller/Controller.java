@@ -79,7 +79,7 @@ public class Controller {
     }
 
     private void changeStep(Optional<ArrayList<Edge>> edgesOpt){
-        if (edgesOpt.isPresent()) {
+        /*if (edgesOpt.isPresent()) {
             ArrayList<Edge> edgesList = edgesOpt.get();
             edges.clear();
             vertexes.clear();
@@ -111,8 +111,39 @@ public class Controller {
                 edges.add(edgeVisualization);
             }
 
+        }*/
+
+        if (edgesOpt.isPresent()) {
+            ArrayList<Edge> edgesList = edgesOpt.get();
+            boolean color;
+            edges = graphVisualization.getEdges();
+            for(Edge edge:graph.getEdges()){
+                EdgeVisualization edgeVisualization = null;
+                color = false;
+                for(EdgeVisualization e:edges){
+                    if(e.getVertex1().getVertexNum()==edge.getVertex1() && e.getVertex2().getVertexNum()==edge.getVertex2() ||
+                        e.getVertex2().getVertexNum()==edge.getVertex1() && e.getVertex1().getVertexNum()==edge.getVertex2()){
+                        edgeVisualization=e;
+                        break;
+                    }
+                }
+                for(Edge edge2:edgesList){
+                    if(edge2.equals(edge)){
+                        if(edge2.getMarkLastAdded()){
+                            edgeVisualization.setColor(EdgeVisualization.COLOR_LAST_ADD);
+                        }else{
+                            edgeVisualization.setColor(EdgeVisualization.COLOR_JUST_ADD);
+                        }
+                        color = true;
+                        break;
+                    }
+                }
+                if(!color){
+                    edgeVisualization.setColor(EdgeVisualization.DEFAULT_COLOR);
+                }
+            }
+
         }
-        graphVisualization.setVertexes(vertexes);
         graphVisualization.setEdges(edges);
         gui.setGraphVisualization(graphVisualization);
     }
@@ -126,11 +157,11 @@ public class Controller {
                 return;
             }
             try {
-                vertexes.clear();
-                edges.clear();
-
                 String matrix = Controller.this.gui.getTextAtInputAddGraph();
                 if (CheckingCorrect.checkCorrectStringMatrix(matrix)) {
+                    vertexes.clear();
+                    edges.clear();
+
                     ArrayList<ArrayList<Integer>> matrixInt = Converter.convertStringMatrix(matrix);
                     graph = new Graph(matrixInt);
 
@@ -143,6 +174,7 @@ public class Controller {
                     }
 
                     graphVisualization.setVertexes(vertexes);
+                    graphVisualization.setCoordinates();
                     graphVisualization.setEdges(edges);
                     graphVisualization.setVertexHandler(new VertexHandler(Controller.this));
                     graphVisualization.setEdgeHandler(new EdgeHandler(Controller.this));
@@ -168,13 +200,30 @@ public class Controller {
                 return;
             }
             edges.clear();
-            vertexes.clear();
-
+            ArrayList<VertexVisualization> newVertexes = new ArrayList<>();
             graph.addVertex();
 
             for(Integer v:graph.getVertexes()){
-                vertexes.add(new VertexVisualization(v));
+                newVertexes.add(new VertexVisualization(v));
             }
+
+            boolean newVertex;
+            for(VertexVisualization v1:newVertexes){
+                newVertex=false;
+                for(VertexVisualization v2:vertexes){
+                    if(v1.getVertexNum()==v2.getVertexNum() && v2.getVertexNum()==v1.getVertexNum()){
+                        v1.setCoords(v2.getCoordX(),v2.getCoordY());
+                        newVertex=true;
+                        break;
+                    }
+                }
+                if(!newVertex)
+                {
+                    v1.setCoords(40,40);
+                }
+            }
+
+            vertexes=newVertexes;
 
             for(Edge edge:graph.getEdges()){
                 int vertex1  = edge.getVertex1();
@@ -209,7 +258,12 @@ public class Controller {
 
                     edges.clear();
                     for(Edge edge_:graph.getEdges()){
-                        edges.add(new EdgeVisualization(vertexes.get(edge_.getVertex1()),vertexes.get(edge_.getVertex2()),edge_.getWeight()));
+                        try {
+                            edges.add(new EdgeVisualization(vertexes.get(edge_.getVertex1()), vertexes.get(edge_.getVertex2()), edge_.getWeight()));
+                        }catch (NumberFormatException ex){
+                            JOptionPane.showOptionDialog(graphVisualization,"Ребро введено неверно!","information",
+                                    JOptionPane.DEFAULT_OPTION,JOptionPane.INFORMATION_MESSAGE,null,null,null);
+                        }
                     }
 
                     graphVisualization.setEdges(edges);
@@ -254,6 +308,7 @@ public class Controller {
                     }
 
                     graphVisualization.setVertexes(vertexes);
+                    graphVisualization.setCoordinates();
                     graphVisualization.setEdges(edges);
                     graphVisualization.setVertexHandler(new VertexHandler(Controller.this));
                     graphVisualization.setEdgeHandler(new EdgeHandler(Controller.this));
@@ -330,28 +385,9 @@ public class Controller {
         public void actionPerformed(ActionEvent e) {
             if(algoStart) {
                 algoStart=false;
-                vertexes.clear();
-                edges.clear();
-
-                for(Integer v:graph.getVertexes()){
-                    vertexes.add(new VertexVisualization(v));
+                for(EdgeVisualization edge:edges){
+                    edge.setColor(EdgeVisualization.DEFAULT_COLOR);
                 }
-
-                for(Edge edge:graph.getEdges()){
-                    VertexVisualization v1 = null;
-                    VertexVisualization v2 = null;
-                    for(VertexVisualization v:vertexes){
-                        if(edge.getVertex1()==v.getVertexNum()){
-                            v1=v;
-                        }
-                        if(edge.getVertex2()==v.getVertexNum()){
-                            v2=v;
-                        }
-                    }
-                    edges.add(new EdgeVisualization(v1,v2,edge.getWeight()));
-                }
-
-                graphVisualization.setVertexes(vertexes);
                 graphVisualization.setEdges(edges);
                 gui.setGraphVisualization(graphVisualization);
             }else{

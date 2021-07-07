@@ -73,12 +73,8 @@ public class EdgeHandler implements ElementHandler{
     }
 
     private void setChanges(){
-        ArrayList<VertexVisualization> vertexes = new ArrayList<>();
+        ArrayList<VertexVisualization> vertexes = controller.graphVisualization.getVertexes();
         ArrayList<EdgeVisualization> edges = new ArrayList<>();
-
-        for(Integer v:controller.graph.getVertexes()){
-            vertexes.add(new VertexVisualization(v));
-        }
 
         for(Edge edge:controller.graph.getEdges()){
             int vertex1  = edge.getVertex1();
@@ -88,7 +84,7 @@ public class EdgeHandler implements ElementHandler{
             edges.add(new EdgeVisualization(vertexes.get(indexVertex1),vertexes.get(indexVertex2),edge.getWeight()));
         }
 
-        controller.graphVisualization = new GraphVisualization(vertexes,edges);
+        controller.graphVisualization.setEdges(edges);
         controller.graphVisualization.setVertexHandler(new VertexHandler(controller));
         controller.graphVisualization.setEdgeHandler(new EdgeHandler(controller));
         controller.gui.setGraphVisualization(controller.graphVisualization);

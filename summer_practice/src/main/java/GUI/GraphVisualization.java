@@ -7,18 +7,20 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 
-public class GraphVisualization extends JPanel implements MouseListener {
+public class GraphVisualization extends JPanel implements MouseListener, MouseMotionListener {
     ArrayList<VertexVisualization> vertexes;
     ArrayList<EdgeVisualization> edges;
-    private  float panel_radius;
     private final int HEIGHT = 700;
     private final int WIDTH = 800;
-
+    VertexVisualization movableVertex;
     VertexHandler vHandler;
     EdgeHandler eHandler;
+    private int button;
 
 
     public static final int RADIUS = 20;
@@ -29,11 +31,11 @@ public class GraphVisualization extends JPanel implements MouseListener {
         vertexes.forEach((v)->v.setRadius(RADIUS));
         setCoordinates();
         addMouseListener(this);
+        addMouseMotionListener(this);
     }
 
     public void setVertexes(ArrayList<VertexVisualization> v){
         this.vertexes = v;
-        setCoordinates();
         vertexes.forEach((vertex)->vertex.setRadius(RADIUS));
     }
 
@@ -49,7 +51,7 @@ public class GraphVisualization extends JPanel implements MouseListener {
         return edges;
     }
 
-    private void setCoordinates(){
+    public void setCoordinates(){
         int count = vertexes.size();
         float pi = (float) Math.PI;
         float delta = 2*pi/count;
@@ -57,9 +59,9 @@ public class GraphVisualization extends JPanel implements MouseListener {
         for(VertexVisualization v:vertexes){
             double angle = pi - i*delta;
             Dimension d = getSize();
-            panel_radius = Float.min(WIDTH,HEIGHT)/2;
-            float x= panel_radius*(float)Math.cos(angle)+panel_radius;
-            float y= panel_radius*(float)Math.sin(angle)+panel_radius;
+            float panel_radius = Float.min(WIDTH, HEIGHT) / 2;
+            float x= panel_radius *(float)Math.cos(angle)+ panel_radius;
+            float y= panel_radius *(float)Math.sin(angle)+ panel_radius;
             x = x>=RADIUS ? x : RADIUS;
             y = y>=RADIUS ? y : RADIUS;
             x = Math.min(x, panel_radius * 2 - RADIUS);
@@ -134,12 +136,27 @@ public class GraphVisualization extends JPanel implements MouseListener {
 
     @Override
     public void mousePressed(MouseEvent e) {
+        button=e.getButton();
+        if(button==MouseEvent.BUTTON1) {
+            Collections.reverse(vertexes);
+            for (VertexVisualization v : vertexes) {
+                float x = v.getCoordX();
+                float y = v.getCoordY();
+                float radius = v.getRadius();
 
+                if (e.getX()<=x+radius && e.getX()>=x-radius && e.getY()<=y+radius && e.getY()>=y-radius){
+                    movableVertex = v;
+                    break;
+                }
+            }
+            Collections.reverse(vertexes);
+        }
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
-
+        button=-1;
+        movableVertex=null;
     }
 
     @Override
@@ -168,4 +185,21 @@ public class GraphVisualization extends JPanel implements MouseListener {
 
         return Math.abs((x - x0) / (x1 - x0) - (y - y0) / (y1 - y0)) < diff && x < Math.max(x0, x1) && x > Math.min(x0, x1) && y < Math.max(y0, y1) && y > Math.min(y0, y1);
     }
+
+    @Override
+    public void mouseDragged(MouseEvent mouseEvent) {
+        if(button!=MouseEvent.BUTTON1 || movableVertex==null){
+            return;
+        }
+        int x = mouseEvent.getX();
+        int y = mouseEvent.getY();
+        if(x<0 || y<0 || x>getWidth() || y>getHeight()){
+            return;
+        }
+        movableVertex.setCoords(x,y);
+        repaint();
+    }
+
+    @Override
+    public void mouseMoved(MouseEvent mouseEvent) { }
 }

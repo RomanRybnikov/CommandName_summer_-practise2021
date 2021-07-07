@@ -8,6 +8,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.ListIterator;
 
 public class VertexHandler implements ElementHandler{
     private int vertexNum = -1;
@@ -86,12 +87,11 @@ public class VertexHandler implements ElementHandler{
     }
 
     private void setChanges(){//изменяет визуализацию графа
-        ArrayList<VertexVisualization> vertexes = new ArrayList<>();
         ArrayList<EdgeVisualization> edges = new ArrayList<>();
+        ArrayList<VertexVisualization> vertexes = controller.graphVisualization.getVertexes();
 
-        for(Integer v:controller.graph.getVertexes()){
-            vertexes.add(new VertexVisualization(v));
-        }
+        vertexes.removeIf(vertex -> !controller.graph.getVertexes().contains(vertex.getVertexNum()));
+
 
         for(Edge edge:controller.graph.getEdges()){
             int vertex1  = edge.getVertex1();
@@ -109,7 +109,8 @@ public class VertexHandler implements ElementHandler{
             edges.add(new EdgeVisualization(v1,v2,edge.getWeight()));
         }
 
-        controller.graphVisualization = new GraphVisualization(vertexes,edges);
+        controller.graphVisualization.setVertexes(vertexes);
+        controller.graphVisualization.setEdges(edges);
         controller.graphVisualization.setVertexHandler(new VertexHandler(controller));
         controller.graphVisualization.setEdgeHandler(new EdgeHandler(controller));
         controller.gui.setGraphVisualization(controller.graphVisualization);

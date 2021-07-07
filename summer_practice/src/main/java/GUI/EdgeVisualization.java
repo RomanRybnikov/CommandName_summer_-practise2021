@@ -6,7 +6,7 @@ import java.awt.geom.Line2D;
 public class EdgeVisualization {
 
     private final static int DEFAULT_INT=-1;
-    private final static Color DEFAULT_COLOR=Color.gray;
+    public final static Color DEFAULT_COLOR=Color.gray;
     public static final Color COLOR_JUST_ADD = Color.magenta;
     public static final Color COLOR_LAST_ADD = Color.red;
 
