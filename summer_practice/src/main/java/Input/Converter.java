@@ -12,11 +12,11 @@ public class Converter {
         for(int i = 0 ;i<splitMatrix.length;i++){
             matrix.add(new ArrayList<>());
             String[] row = splitMatrix[i].split(" ");
-            for(int j = 0 ;j<row.length;j++){
-                if(row[j].equals("-")){
+            for (String s : row) {
+                if (s.equals("-")) {
                     matrix.get(i).add(Graph.EMPTY_EDGE);
-                }else {
-                    matrix.get(i).add(Integer.parseInt(row[j]));
+                } else {
+                    matrix.get(i).add(Integer.parseInt(s));
                 }
             }
         }

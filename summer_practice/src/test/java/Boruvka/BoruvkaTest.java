@@ -1,6 +1,8 @@
 package Boruvka;
 
 import Input.CheckingCorrect;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.io.IOException;
@@ -52,7 +54,8 @@ class BoruvkaTest {
             graph2 = new Graph(matrix2);
             graph3 = new Graph(matrix3);
         }catch (IOException e){
-            System.out.println(e.getMessage());
+            Logger logger = LogManager.getLogger();
+            logger.info("in BoruvkaTest: "+e.getMessage());
         }
 
     }

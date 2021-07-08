@@ -5,7 +5,7 @@ import GUI.GraphVisualization;
 import GUI.Gui;
 import GUI.VertexVisualization;
 import Graph.*;
-
+import org.apache.logging.log4j.*;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -58,7 +58,9 @@ public class EdgeHandler implements ElementHandler{
                             setChanges();
                         }catch (NumberFormatException | IOException ex){
                             JOptionPane.showOptionDialog(controller.graphVisualization,"Неверный формат веса ребра.","information",
-                                    JOptionPane.DEFAULT_OPTION,JOptionPane.INFORMATION_MESSAGE,null,null,null);;
+                                    JOptionPane.DEFAULT_OPTION,JOptionPane.INFORMATION_MESSAGE,null,null,null);
+                            Logger logger = LogManager.getLogger();
+                            logger.info("in EdgeHandler: Неверный формат веса ребра; вес:"+result);
                         }
                     }
                 });

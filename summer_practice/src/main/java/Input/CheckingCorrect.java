@@ -3,11 +3,22 @@ package Input;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.Optional;
 import java.util.concurrent.ArrayBlockingQueue;
 
 import Graph.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class CheckingCorrect {
+
+    public static final int ERROR_COUNT_VERTEXES=-1;
+    public static final int ERROR_COUNT_EDGES = -2;
+    public static final int ERROR_MIN_WEIGHT = -3;
+    public static final int ERROR_MAX_WEIGHT = -4;
+    public static final int ERROR_NOT_FILLED = -5;
+    public static final int ERROR_DEFAULT = -6;
+    private static int[] errors;
 
     private static boolean isEmptyMatrix(String matrix){
         return matrix.isEmpty();
@@ -20,27 +31,28 @@ public class CheckingCorrect {
             }
         }
 
-        for(int i = 0 ;i<stringMatrix.length;i++){
-            String[] line = stringMatrix[i].split(" ");
-            for(int j = 0;j<line.length;j++ ) {
+        for (String s : stringMatrix) {
+            String[] line = s.split(" ");
+            for (String value : line) {
                 try {
-                    if (!line[j].equals("-")){
-                        Integer.parseInt(line[j]);
+                    if (!value.equals("-")) {
+                        Integer.parseInt(value);
                     }
                 } catch (NumberFormatException e) {
+                    Logger logger = LogManager.getLogger();
+                    logger.info("in CheckingCorrect: " + e.getMessage());
                     return false;
                 }
             }
         }
-
         return true;
     }
     private static boolean checkCorrectSizeMatrix(String[] stringMatrix){
 
         int size=stringMatrix.length;
-        for(int i = 0 ;i<stringMatrix.length;i++){
-            String[] line = stringMatrix[i].split(" ");
-            if(line.length!=size){
+        for (String matrix : stringMatrix) {
+            String[] line = matrix.split(" ");
+            if (line.length != size) {
                 return false;
             }
         }
@@ -71,6 +83,8 @@ public class CheckingCorrect {
             try{
                 Integer.parseInt(edgeSplit[i]);
             }catch (NumberFormatException e){
+                Logger logger = LogManager.getLogger();
+                logger.info("in CheckingCorrct: " + e.getMessage());
                 return false;
             }
         }
@@ -102,17 +116,42 @@ public class CheckingCorrect {
 
     public static boolean checkCorrectStringLimits(String limits){
         String[] splitLimits = limits.split(" ");
-        if(splitLimits.length!=4){
+        errors = new int[6];
+        Arrays.fill(errors,0);
+        int errorIndex = 0;
+
+        if(splitLimits.length<4){
+            errors[errorIndex] = ERROR_NOT_FILLED;
             return false;
         }
+        if(splitLimits.length>4){
+            errors[errorIndex] = ERROR_DEFAULT;
+            return false;
+        }
+
         for(int i = 0 ;i<4;i++){
             try {
                 Integer.parseInt(splitLimits[i]);
-            }catch (NumberFormatException ex){
-                return false;
+            }catch (NumberFormatException ex) {
+                switch (i) {
+                    case 0:
+                        errors[errorIndex++]=ERROR_COUNT_EDGES;
+                        break;
+                    case 1:
+                        errors[errorIndex++]=ERROR_COUNT_VERTEXES;
+                        break;
+                    case 2:
+                        errors[errorIndex++]=ERROR_MIN_WEIGHT;
+                        break;
+                    case 3:
+                        errors[errorIndex++]=ERROR_MAX_WEIGHT;
+                        break;
+                }
+                Logger logger = LogManager.getLogger();
+                logger.info("in CheckingCorrect: " + ex.getMessage());
             }
         }
-        return true;
+        return errorIndex==0;
     }
 
     public static boolean checkCorrectGraphForBoruvka(Graph graph){//проверка на то что граф связный
@@ -147,5 +186,13 @@ public class CheckingCorrect {
             }
         }
         return true;
+    }
+
+    public static Optional<int[]> getErrors(){
+        if(errors==null){
+            return Optional.empty();
+        }
+        Optional<int[]> errorsOpt = Optional.of(errors);
+        return errorsOpt;
     }
 }

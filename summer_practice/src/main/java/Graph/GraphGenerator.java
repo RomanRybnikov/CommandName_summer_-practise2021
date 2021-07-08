@@ -38,7 +38,7 @@ public class GraphGenerator {
     }
 
     private boolean checkCorrect(int countEdges,int countVertexes,int minWeight,int maxWeight){
-        return !(countVertexes<3 || countEdges<countVertexes-1 || countEdges>countVertexes*(countVertexes-1)/2 || minWeight<0 || maxWeight<minWeight);
+        return !(countVertexes<2 || countEdges<countVertexes-1 || countEdges>countVertexes*(countVertexes-1)/2 || minWeight<0 || maxWeight<minWeight);
     }
 
     public Graph generateGraph(){

@@ -15,13 +15,6 @@ public class EdgeVisualization {
     private int weight=DEFAULT_INT;
     private Color color = DEFAULT_COLOR;
 
-    public EdgeVisualization(int weight) throws NumberFormatException{
-        if(weight<0){
-            throw new NumberFormatException("wrong edge weight");
-        }
-        this.weight = weight;
-    }
-
     public EdgeVisualization(VertexVisualization v1,VertexVisualization v2,int weight) throws NumberFormatException {
         if(weight<0){
             throw new NumberFormatException("wrong edge format ");
@@ -30,18 +23,6 @@ public class EdgeVisualization {
         this.vertex2=v2;
         this.weight=weight;
 
-    }
-
-    public void setVertexes(VertexVisualization v1, VertexVisualization v2){
-        this.vertex2=v2;
-        this.vertex1=v1;
-    }
-
-    public void setWeight(int weight){
-        if(weight<0){
-            throw new NumberFormatException("wrong edge weight format");
-        }
-        this.weight=weight;
     }
 
     public void setColor(Color color) throws NumberFormatException{
@@ -57,10 +38,6 @@ public class EdgeVisualization {
 
     public VertexVisualization getVertex2(){
         return vertex2;
-    }
-
-    public Color getColor(){
-        return color;
     }
 
     public int getWeight(){

@@ -50,7 +50,9 @@ public class Edge {
     public void setMarkLastAdded(boolean mark){
         markLastAdded=mark;
     }
-    public boolean getMarkLastAdded(){return  markLastAdded;}
+    public boolean getMarkLastAdded(){
+        return  markLastAdded;
+    }
 
     @Override
     public String toString() {

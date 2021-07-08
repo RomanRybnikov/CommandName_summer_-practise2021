@@ -14,16 +14,6 @@ public class VertexVisualization {
     private Color color = DEFAULT_COLOR;
     private float radius = DEFAULT_FLOAT;
 
-    public VertexVisualization(Integer vertexNum, float coordx, float coordy, float radius) throws NumberFormatException{
-        if(vertexNum <0 || coordx<0 || coordy<0 || radius<=0){
-            throw new NumberFormatException("wrong vertex format");
-        }
-        this.vertexNum = vertexNum;
-        this.coordX =coordx;
-        this.coordY =coordy;
-        this.radius=radius;
-    }
-
     public VertexVisualization(Integer vertexNum) throws NumberFormatException{
         if(vertexNum<0){
             throw new NumberFormatException("wrong vertex format");
@@ -58,9 +48,6 @@ public class VertexVisualization {
         this.color=color;
     }
 
-    public Color getColor(){
-        return color;
-    }
 
     public void setRadius(float radius){
         this.radius=radius;

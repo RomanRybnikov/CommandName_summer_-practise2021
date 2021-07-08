@@ -1,13 +1,10 @@
 package GUI;
-import Controller.EdgeHandler;
-import Controller.ElementHandler;
-import Controller.VertexHandler;
+import Controller.*;
+import org.apache.logging.log4j.*;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
+import java.awt.event.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -15,13 +12,14 @@ import java.util.Collections;
 public class GraphVisualization extends JPanel implements MouseListener, MouseMotionListener {
     ArrayList<VertexVisualization> vertexes;
     ArrayList<EdgeVisualization> edges;
-    private final int HEIGHT = 700;
-    private final int WIDTH = 800;
+    private final int HEIGHT = 600;
+    private final int WIDTH = 930;
     VertexVisualization movableVertex;
     VertexHandler vHandler;
     EdgeHandler eHandler;
     private int button;
-
+    AddVertexAction addVertexAction;
+    private static boolean waitClick = false;
 
     public static final int RADIUS = 20;
 
@@ -66,7 +64,7 @@ public class GraphVisualization extends JPanel implements MouseListener, MouseMo
             y = y>=RADIUS ? y : RADIUS;
             x = Math.min(x, panel_radius * 2 - RADIUS);
             y = Math.min(y, panel_radius * 2 - RADIUS);
-            v.setCoords( x, y);
+            v.setCoords( x+110, y);
             i++;
         }
     }
@@ -79,6 +77,13 @@ public class GraphVisualization extends JPanel implements MouseListener, MouseMo
         this.eHandler = (EdgeHandler) edgeHandler;
     }
 
+    public void setAddVertexAction(AddVertexAction action){
+        this.addVertexAction=action;
+    }
+
+    public static void setWaitClick(boolean wait){
+        waitClick=wait;
+    }
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -93,13 +98,30 @@ public class GraphVisualization extends JPanel implements MouseListener, MouseMo
                 v.draw(graphics);
             }
         }catch (NumberFormatException e){
-            System.out.println(e.getMessage());
+            Logger logger = LogManager.getLogger();
+            logger.info("in GraphVisualization: "+e.getMessage());
         }
         setSize(WIDTH,HEIGHT);
     }
 
     @Override
     public void mouseClicked(MouseEvent e) {
+        if(waitClick){
+            int numVertex = -1;
+            for(VertexVisualization v:vertexes){
+                float x = v.getCoordX();
+                float y = v.getCoordY();
+                float radius = v.getRadius();
+                if(e.getX()<=x+radius && e.getY()<=y+radius && e.getX()>=x-radius && e.getY()>=y-radius){
+                    numVertex=v.getVertexNum();
+                    break;
+                }
+            }
+            vHandler.setVertexNumForLink(numVertex);
+            vHandler.setNumButton(e.getButton());
+            vHandler.addLinkProcessing();
+            return;
+        }
         if(e.getButton()==MouseEvent.BUTTON3 || e.getButton()==MouseEvent.BUTTON1){
             float x = e.getX();
             float y = e.getY();
@@ -131,13 +153,28 @@ public class GraphVisualization extends JPanel implements MouseListener, MouseMo
                     return;
                 }
             }
+            if(e.getButton()==MouseEvent.BUTTON3 && !Controller.algoStart){
+                JPopupMenu menu = new JPopupMenu();
+                JMenuItem itemAddVertex = new JMenuItem("Добавить сюда вершину");
+
+                itemAddVertex.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent event) {
+                        addVertexAction.setCoords(e.getX(),e.getY());
+                        addVertexAction.addVertex();
+                    }
+                });
+
+                menu.add(itemAddVertex);
+                menu.show(this, e.getX(), e.getY());
+            }
         }
     }
 
     @Override
     public void mousePressed(MouseEvent e) {
         button=e.getButton();
-        if(button==MouseEvent.BUTTON1) {
+        if(button==MouseEvent.BUTTON1 && !waitClick) {
             Collections.reverse(vertexes);
             for (VertexVisualization v : vertexes) {
                 float x = v.getCoordX();
@@ -170,14 +207,14 @@ public class GraphVisualization extends JPanel implements MouseListener, MouseMo
     }
 
     private boolean lineContainsPoint(float x,float y,float x0,float y0,float x1,float y1){
-        float diff = 0.5f;
+        float diff = 15;
         if(Math.abs(x0-x1)<diff){//для вертикальной прямой
-            diff=1.0f;
+            diff=15.0f;
             return  Math.abs(x-x0)<diff && y<Math.max(y0,y1) && y>Math.min(y0,y1);
         }
-        diff=0.5f;
+        diff=15;
         if(Math.abs(y0-y1)<diff){//для горизонтальной
-            diff=1.0f;
+            diff=15.0f;
             return  Math.abs(y-y0)<diff && x<Math.max(x0,x1) && x>Math.min(x0,x1);
         }
         diff = 0.03f;
@@ -188,12 +225,12 @@ public class GraphVisualization extends JPanel implements MouseListener, MouseMo
 
     @Override
     public void mouseDragged(MouseEvent mouseEvent) {
-        if(button!=MouseEvent.BUTTON1 || movableVertex==null){
+        if(button!=MouseEvent.BUTTON1 || movableVertex==null || waitClick){
             return;
         }
         int x = mouseEvent.getX();
         int y = mouseEvent.getY();
-        if(x<0 || y<0 || x>getWidth() || y>getHeight()){
+        if(x<movableVertex.getRadius() || y<movableVertex.getRadius() || x>getWidth()-movableVertex.getRadius() || y>getHeight()-movableVertex.getRadius()){
             return;
         }
         movableVertex.setCoords(x,y);
