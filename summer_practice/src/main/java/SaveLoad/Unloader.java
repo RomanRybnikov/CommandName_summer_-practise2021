@@ -12,25 +12,25 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 public class Unloader {
-    public boolean save(Graph graph, String name){
+    public boolean save(Graph graph, String name) {
         Gson gson = new Gson();
         String jsonString = gson.toJson(graph);
         FileOutputStream output = null;
 
-        try{
+        try {
             output = new FileOutputStream(name);
             output.write(jsonString.getBytes());
-        }catch(Exception e){
+        } catch (Exception e) {
             Logger logger = LogManager.getLogger();
-            logger.info("in Unloader: "+e.getMessage());
+            logger.info("in Unloader: " + e.getMessage());
             return false;
         }
-        if(output != null){
+        if (output != null) {
             try {
                 output.close();
-            }catch (IOException e){
+            } catch (IOException e) {
                 Logger logger = LogManager.getLogger();
-                logger.info("in Unloader: "+e.getMessage());
+                logger.info("in Unloader: " + e.getMessage());
                 return false;
             }
         }

@@ -58,13 +58,13 @@ public class Gui extends JFrame {
     private JMenuItem load;
     private JMenuItem save;
 
-    private boolean modeEdited=true;
+    private boolean modeEdited = true;
 
 
-    public Gui(GraphVisualization graphVisualization){
+    public Gui(GraphVisualization graphVisualization) {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
-        this.graphVisualization=graphVisualization;
+        this.graphVisualization = graphVisualization;
 
         init();
         initWindowSettings();
@@ -72,9 +72,9 @@ public class Gui extends JFrame {
         createMenu();
     }
 
-    private void setElements(){
+    private void setElements() {
 
-        mainContainer.setSize(900,700);
+        mainContainer.setSize(900, 700);
         mainContainer.setLayout(mainLayout);
 
         JPanel eastPanel = new JPanel();
@@ -84,11 +84,11 @@ public class Gui extends JFrame {
         setEastPanel(eastPanel);
         setWestPanel(westPanel);
         setSouthPanel(southPanel);
-        setMainContainer(eastPanel,westPanel,southPanel);
+        setMainContainer(eastPanel, westPanel, southPanel);
         setContentPane(mainContainer);
     }
 
-    private void init(){
+    private void init() {
         mainContainer = new JPanel();
         mainLayout = new BorderLayout();
 
@@ -100,9 +100,9 @@ public class Gui extends JFrame {
         buttonAddVertex = new JButton("Add vertex");
 
         buttonGenerateGraph = new JButton("Generate Graph");
-        textInputCountVertexesForGenerate=  new JTextField();
+        textInputCountVertexesForGenerate = new JTextField();
         textInputCountEdgesForGenerate = new JTextField();
-        textInputMaxWeightForGenerate=new JTextField();
+        textInputMaxWeightForGenerate = new JTextField();
         textInputMinWeightForGenerate = new JTextField();
         textHintCountVertexesForGenerate = new JTextField("Количество вершин:");
         textHintCountVertexesForGenerate.setEditable(false);
@@ -127,7 +127,7 @@ public class Gui extends JFrame {
         textHintWeight.setEditable(false);
 
 
-        emptyLabelAddVertex=new JLabel();
+        emptyLabelAddVertex = new JLabel();
         inputGraphScrollPane = new JScrollPane(textInputAddGraph);
         buttonEnd = new JButton("TO END");
         buttonStop = new JButton("STOP");
@@ -144,204 +144,208 @@ public class Gui extends JFrame {
         textHintMode.setEditable(false);
     }
 
-    private void initWindowSettings(){
-        setSize(1300,750);
+    private void initWindowSettings() {
+        setSize(1300, 750);
         setResizable(false);
         setTitle("Boruvka");
     }
 
 
-    private void setEastPanel(JPanel eastPanel){
-        eastPanel.setBorder(new EmptyBorder(20,20,20,20));
+    private void setEastPanel(JPanel eastPanel) {
+        eastPanel.setBorder(new EmptyBorder(20, 20, 20, 20));
         GridBagLayout eastLayout = new GridBagLayout();
         eastPanel.setLayout(eastLayout);
 
         GridBagConstraints eastConstraints = new GridBagConstraints();
         eastConstraints.fill = GridBagConstraints.BOTH;
-        eastConstraints.gridx=0;
-        eastConstraints.gridy=0;
-        eastConstraints.weighty=0.5;
-        eastPanel.add(buttonAddVertex,eastConstraints);
+        eastConstraints.gridx = 0;
+        eastConstraints.gridy = 0;
+        eastConstraints.weighty = 0.5;
+        eastPanel.add(buttonAddVertex, eastConstraints);
 
-        eastConstraints.weighty=2;
-        eastConstraints.gridy=1;
-        eastPanel.add(emptyLabelAddVertex,eastConstraints);
+        eastConstraints.weighty = 2;
+        eastConstraints.gridy = 1;
+        eastPanel.add(emptyLabelAddVertex, eastConstraints);
 
-        eastConstraints.weighty=0.01;
-        eastConstraints.gridy=2;
-        eastPanel.add(textHintVertex1,eastConstraints);
-        eastConstraints.gridy=3;
-        eastPanel.add(textInputVertex1,eastConstraints);
-        eastConstraints.gridy=4;
-        eastPanel.add(textHintVertex2,eastConstraints);
-        eastConstraints.gridy=5;
-        eastPanel.add(textInputVertex2,eastConstraints);
-        eastConstraints.gridy=6;
-        eastPanel.add(textHintWeight,eastConstraints);
-        eastConstraints.gridy=7;
-        eastPanel.add(textInputWeight,eastConstraints);
+        eastConstraints.weighty = 0.01;
+        eastConstraints.gridy = 2;
+        eastPanel.add(textHintVertex1, eastConstraints);
+        eastConstraints.gridy = 3;
+        eastPanel.add(textInputVertex1, eastConstraints);
+        eastConstraints.gridy = 4;
+        eastPanel.add(textHintVertex2, eastConstraints);
+        eastConstraints.gridy = 5;
+        eastPanel.add(textInputVertex2, eastConstraints);
+        eastConstraints.gridy = 6;
+        eastPanel.add(textHintWeight, eastConstraints);
+        eastConstraints.gridy = 7;
+        eastPanel.add(textInputWeight, eastConstraints);
 
-        eastConstraints.weighty=0.5;
-        eastConstraints.gridy =8;
-        eastPanel.add(buttonAddEdge,eastConstraints);
+        eastConstraints.weighty = 0.5;
+        eastConstraints.gridy = 8;
+        eastPanel.add(buttonAddEdge, eastConstraints);
     }
 
-    private void setWestPanel(JPanel westPanel){
-        westPanel.setBorder(new EmptyBorder(4,4,4,4));
+    private void setWestPanel(JPanel westPanel) {
+        westPanel.setBorder(new EmptyBorder(4, 4, 4, 4));
         GridBagLayout westLayout = new GridBagLayout();
         westPanel.setLayout(westLayout);
 
         GridBagConstraints westConstraints = new GridBagConstraints();
-        westConstraints.weighty=0.5;
+        westConstraints.weighty = 0.5;
         westConstraints.fill = GridBagConstraints.BOTH;
-        westConstraints.gridx=0;
-        westConstraints.gridy=0;
-        westConstraints.weightx=1;
+        westConstraints.gridx = 0;
+        westConstraints.gridy = 0;
+        westConstraints.weightx = 1;
 
-        westPanel.add(buttonInputGraph,westConstraints);
+        westPanel.add(buttonInputGraph, westConstraints);
 
-        westConstraints.weighty=0.1;
-        westConstraints.gridy=1;
-        westPanel.add(inputGraphHint,westConstraints);
+        westConstraints.weighty = 0.1;
+        westConstraints.gridy = 1;
+        westPanel.add(inputGraphHint, westConstraints);
 
-        westConstraints.weighty=2;
-        westConstraints.gridy=2;
-        westPanel.add(inputGraphScrollPane,westConstraints);
+        westConstraints.weighty = 2;
+        westConstraints.gridy = 2;
+        westPanel.add(inputGraphScrollPane, westConstraints);
 
         JLabel empty1 = new JLabel();
         JLabel empty2 = new JLabel();
 
-        westConstraints.weighty=0.8;
-        westConstraints.gridy=3;
-        westPanel.add(empty1,westConstraints);
-        westConstraints.gridy=6;
-        westPanel.add(empty2,westConstraints);
+        westConstraints.weighty = 0.8;
+        westConstraints.gridy = 3;
+        westPanel.add(empty1, westConstraints);
+        westConstraints.gridy = 6;
+        westPanel.add(empty2, westConstraints);
 
-        westConstraints.weighty=0.3;
-        westConstraints.gridy=4;
-        westPanel.add(textHintMode,westConstraints);
-        westConstraints.gridy=5;
-        westPanel.add(textMode,westConstraints);
+        westConstraints.weighty = 0.3;
+        westConstraints.gridy = 4;
+        westPanel.add(textHintMode, westConstraints);
+        westConstraints.gridy = 5;
+        westPanel.add(textMode, westConstraints);
 
-        westConstraints.weighty=0.05;
+        westConstraints.weighty = 0.05;
 
-        westConstraints.gridy=7;
-        westPanel.add(textHintCountVertexesForGenerate,westConstraints);
-        westConstraints.gridy=8;
-        westPanel.add(textInputCountVertexesForGenerate,westConstraints);
+        westConstraints.gridy = 7;
+        westPanel.add(textHintCountVertexesForGenerate, westConstraints);
+        westConstraints.gridy = 8;
+        westPanel.add(textInputCountVertexesForGenerate, westConstraints);
 
-        westConstraints.gridy=9;
-        westPanel.add(textHintCountEdgesForGenerate,westConstraints);
-        westConstraints.gridy=10;
-        westPanel.add(textInputCountEdgesForGenerate,westConstraints);
+        westConstraints.gridy = 9;
+        westPanel.add(textHintCountEdgesForGenerate, westConstraints);
+        westConstraints.gridy = 10;
+        westPanel.add(textInputCountEdgesForGenerate, westConstraints);
 
-        westConstraints.gridy=11;
-        westPanel.add(textHintMinWeightForGenerate,westConstraints);
-        westConstraints.gridy=12;
-        westPanel.add(textInputMinWeightForGenerate,westConstraints);
+        westConstraints.gridy = 11;
+        westPanel.add(textHintMinWeightForGenerate, westConstraints);
+        westConstraints.gridy = 12;
+        westPanel.add(textInputMinWeightForGenerate, westConstraints);
 
-        westConstraints.gridy=13;
-        westPanel.add(textHintMaxWeightForGenerate,westConstraints);
-        westConstraints.gridy=14;
-        westPanel.add(textInputMaxWeightForGenerate,westConstraints);
+        westConstraints.gridy = 13;
+        westPanel.add(textHintMaxWeightForGenerate, westConstraints);
+        westConstraints.gridy = 14;
+        westPanel.add(textInputMaxWeightForGenerate, westConstraints);
 
-        westConstraints.weighty=0.5;
-        westConstraints.gridy=15;
-        westPanel.add(buttonGenerateGraph,westConstraints);
+        westConstraints.weighty = 0.5;
+        westConstraints.gridy = 15;
+        westPanel.add(buttonGenerateGraph, westConstraints);
     }
 
-    private void setSouthPanel(JPanel southPanel){
-        southPanel.setBorder(new EmptyBorder(4,4,4,4));
+    private void setSouthPanel(JPanel southPanel) {
+        southPanel.setBorder(new EmptyBorder(4, 4, 4, 4));
         GridBagLayout southLayout = new GridBagLayout();
         southPanel.setLayout(southLayout);
 
         GridBagConstraints southConstraints = new GridBagConstraints();
-        southConstraints.weightx=0.5;
+        southConstraints.weightx = 0.5;
         southConstraints.fill = GridBagConstraints.BOTH;
-        southConstraints.gridx=0;
-        southConstraints.gridy=0;
+        southConstraints.gridx = 0;
+        southConstraints.gridy = 0;
 
-        southPanel.add(buttonStart,southConstraints);
+        southPanel.add(buttonStart, southConstraints);
 
-        southConstraints.gridx=1;
-        southPanel.add(buttonPrev,southConstraints);
+        southConstraints.gridx = 1;
+        southPanel.add(buttonPrev, southConstraints);
 
-        southConstraints.gridx=2;
-        southPanel.add(buttonNext,southConstraints);
+        southConstraints.gridx = 2;
+        southPanel.add(buttonNext, southConstraints);
 
-        southConstraints.gridx=3;
-        southPanel.add(buttonEnd,southConstraints);
+        southConstraints.gridx = 3;
+        southPanel.add(buttonEnd, southConstraints);
 
-        southConstraints.gridx=4;
-        southPanel.add(buttonStop,southConstraints);
+        southConstraints.gridx = 4;
+        southPanel.add(buttonStop, southConstraints);
     }
 
-    private void setMainContainer(JPanel eastPanel,JPanel westPanel,JPanel southPanel){
-        mainContainer.add(graphVisualization,BorderLayout.CENTER);
-        mainContainer.add(eastPanel,BorderLayout.EAST);
-        mainContainer.add(westPanel,BorderLayout.WEST);
-        mainContainer.add(southPanel,BorderLayout.SOUTH);
+    private void setMainContainer(JPanel eastPanel, JPanel westPanel, JPanel southPanel) {
+        mainContainer.add(graphVisualization, BorderLayout.CENTER);
+        mainContainer.add(eastPanel, BorderLayout.EAST);
+        mainContainer.add(westPanel, BorderLayout.WEST);
+        mainContainer.add(southPanel, BorderLayout.SOUTH);
     }
 
-    public String getTextAtInputAddGraph(){
+    public String getTextAtInputAddGraph() {
         return textInputAddGraph.getText();
     }
 
 
-    public String getTextAtInputLimits(){
-        return textInputCountEdgesForGenerate.getText().trim() + " " + textInputCountVertexesForGenerate.getText().trim() + " "
-                + textInputMinWeightForGenerate.getText().trim() + " " +textInputMaxWeightForGenerate.getText().trim();
+    public String getTextAtInputLimits() {
+        return textInputCountEdgesForGenerate.getText()
+                .trim() + " " + textInputCountVertexesForGenerate.getText()
+                .trim() + " "
+                + textInputMinWeightForGenerate.getText()
+                .trim() + " " + textInputMaxWeightForGenerate.getText()
+                .trim();
     }
 
-    public String getTextAtInputAddEdge(){
-        return textInputVertex1.getText()+" "+textInputVertex2.getText() +" "+textInputWeight.getText();
+    public String getTextAtInputAddEdge() {
+        return textInputVertex1.getText() + " " + textInputVertex2.getText() + " " + textInputWeight.getText();
     }
 
-    public void setGraphVisualization(GraphVisualization visualization){
+    public void setGraphVisualization(GraphVisualization visualization) {
         mainContainer.remove(graphVisualization);
         graphVisualization = visualization;
-        mainContainer.add(graphVisualization,BorderLayout.CENTER);
+        mainContainer.add(graphVisualization, BorderLayout.CENTER);
         mainContainer.repaint();
         mainContainer.revalidate();
     }
 
-    public void setButtonInputGraphListener(ActionListener listener){
+    public void setButtonInputGraphListener(ActionListener listener) {
         buttonInputGraph.addActionListener(listener);
     }
 
-    public void setButtonInputAddVertexListener(ActionListener listener){
+    public void setButtonInputAddVertexListener(ActionListener listener) {
         buttonAddVertex.addActionListener(listener);
     }
 
-    public void setButtonInputAddEdgeListener(ActionListener listener){
+    public void setButtonInputAddEdgeListener(ActionListener listener) {
         buttonAddEdge.addActionListener(listener);
     }
 
-    public void setButtonGenerateGraphListener(ActionListener listener){
+    public void setButtonGenerateGraphListener(ActionListener listener) {
         buttonGenerateGraph.addActionListener(listener);
     }
 
-    public void setButtonStartListener(ActionListener listener){
+    public void setButtonStartListener(ActionListener listener) {
         buttonStart.addActionListener(listener);
     }
 
-    public void setButtonStopListener(ActionListener listener){
+    public void setButtonStopListener(ActionListener listener) {
         buttonStop.addActionListener(listener);
     }
 
-    public void setButtonNextListener(ActionListener listener){
+    public void setButtonNextListener(ActionListener listener) {
         buttonNext.addActionListener(listener);
     }
 
-    public void setButtonPrevListener(ActionListener listener){
+    public void setButtonPrevListener(ActionListener listener) {
         buttonPrev.addActionListener(listener);
     }
 
-    public void setButtonEndListener(ActionListener listener){
+    public void setButtonEndListener(ActionListener listener) {
         buttonEnd.addActionListener(listener);
     }
 
-    private void createMenu(){
+    private void createMenu() {
         menuBar = new JMenuBar();
 
         info = new JMenu("info");
@@ -368,8 +372,8 @@ public class Gui extends JFrame {
         setJMenuBar(menuBar);
     }
 
-    public void changeMode(){
-        if(modeEdited){
+    public void changeMode() {
+        if (modeEdited) {
             setAllEnable(false);
             buttonEnd.setEnabled(true);
             buttonPrev.setEnabled(true);
@@ -377,15 +381,15 @@ public class Gui extends JFrame {
             buttonStop.setEnabled(true);
             info.setEnabled(true);
             textMode.setText("Работа алгоритма");
-        }else{
+        } else {
             textMode.setText("Редактирование графа");
             setAllEnable(true);
         }
 
-        modeEdited=!modeEdited;
+        modeEdited = !modeEdited;
     }
 
-    public void setButtonsEnable(boolean b){
+    public void setButtonsEnable(boolean b) {
         buttonInputGraph.setEnabled(b);
         buttonAddVertex.setEnabled(b);
         buttonAddEdge.setEnabled(b);
@@ -397,7 +401,7 @@ public class Gui extends JFrame {
         buttonEnd.setEnabled(b);
     }
 
-    public void setAllEnable(boolean b){
+    public void setAllEnable(boolean b) {
         graphVisualization.setEnabled(b);
         setButtonsEnable(b);
         menuBar.setEnabled(b);
@@ -415,11 +419,11 @@ public class Gui extends JFrame {
         textInputCountVertexesForGenerate.setEnabled(b);
     }
 
-    public void setLoadListener(ActionListener listener){
+    public void setLoadListener(ActionListener listener) {
         this.load.addActionListener(listener);
     }
 
-    public void setSaveListener(ActionListener listener){
+    public void setSaveListener(ActionListener listener) {
         this.save.addActionListener(listener);
     }
 }
